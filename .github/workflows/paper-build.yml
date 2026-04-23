@@ -1,5 +1,8 @@
 name: Build Papers
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches: [main]
@@ -13,12 +16,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install LaTeX and Pandoc
         run: |
           sudo apt-get update
-          sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended texlive-lang-german pandoc
+          sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-lang-german pandoc
 
       - name: Build PDFs from LaTeX sources
         shell: bash
@@ -33,7 +36,11 @@ jobs:
 
           for tex in "${files[@]}"; do
             echo "Building PDF: $tex"
-            latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error "$tex"
+            tex_dir=$(dirname "$tex")
+            tex_file=$(basename "$tex")
+            pushd "$tex_dir" >/dev/null
+            latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error "$tex_file"
+            popd >/dev/null
           done
 
       - name: Export DOCX with Pandoc
@@ -56,14 +63,14 @@ jobs:
           done
 
       - name: Upload PDF artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: papers-pdf
           path: docs/paper-latex/*.pdf
           if-no-files-found: warn
 
       - name: Upload DOCX artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: papers-docx
           path: docs/paper-latex/export/*.docx
