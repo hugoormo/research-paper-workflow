@@ -39,13 +39,13 @@ function Export-OneDocx {
     $texAbs = Resolve-Path $TexPath -ErrorAction Stop
     $texDir = Split-Path -Path $texAbs -Parent
 
-    New-Item -ItemType Directory -Path (Split-Path -Path $DocxPath -Parent) -Force | Out-Null
+    $docxAbs = [System.IO.Path]::GetFullPath($DocxPath)
+    New-Item -ItemType Directory -Path (Split-Path -Path $docxAbs -Parent) -Force | Out-Null
 
     # Use the tex file directory as working directory so relative image paths resolve.
     Push-Location $texDir
     try {
         $texName = Split-Path -Path $texAbs -Leaf
-        $docxAbs = [System.IO.Path]::GetFullPath((Join-Path $PWD $DocxPath))
         & $PandocPath $texName -o $docxAbs --from=latex --to=docx
     }
     finally {
