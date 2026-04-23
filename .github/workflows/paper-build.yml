@@ -1,0 +1,70 @@
+name: Build Papers
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX and Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended texlive-lang-german pandoc
+
+      - name: Build PDFs from LaTeX sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(docs/paper-latex/*.tex)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No .tex files found under docs/paper-latex"
+            exit 0
+          fi
+
+          for tex in "${files[@]}"; do
+            echo "Building PDF: $tex"
+            latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error "$tex"
+          done
+
+      - name: Export DOCX with Pandoc
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          mkdir -p docs/paper-latex/export
+          files=(docs/paper-latex/*.tex)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No .tex files found under docs/paper-latex"
+            exit 0
+          fi
+
+          for tex in "${files[@]}"; do
+            base=$(basename "$tex" .tex)
+            out="docs/paper-latex/export/${base}.docx"
+            echo "Exporting DOCX: $tex -> $out"
+            pandoc "$tex" -o "$out" --from=latex --to=docx
+          done
+
+      - name: Upload PDF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: papers-pdf
+          path: docs/paper-latex/*.pdf
+          if-no-files-found: warn
+
+      - name: Upload DOCX artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: papers-docx
+          path: docs/paper-latex/export/*.docx
+          if-no-files-found: warn

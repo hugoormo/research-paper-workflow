@@ -39,6 +39,16 @@ powershell -ExecutionPolicy Bypass -File scripts/export-paper-docx.ps1 -PaperBas
 - Procedure: `docs/paper-latex/OPERATIONAL_PROCEDURE.md`
 - QA checklist: `docs/paper-latex/SUBMISSION_CHECKLIST.md`
 
+## CI Build
+
+GitHub Actions workflow `paper-build.yml` runs on push, PR, and manual dispatch.
+
+- Builds PDF for all `docs/paper-latex/*.tex` files.
+- Exports DOCX for all `docs/paper-latex/*.tex` files.
+- Publishes artifacts as:
+  - `papers-pdf`
+  - `papers-docx`
+
 ## Notes
 
 - Keep LaTeX as the master source.
