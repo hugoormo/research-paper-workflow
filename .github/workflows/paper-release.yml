@@ -1,0 +1,96 @@
+name: Release Papers
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install LaTeX and Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-lang-german pandoc zip
+
+      - name: Build PDFs from LaTeX sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(docs/paper-latex/*.tex)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No .tex files found under docs/paper-latex"
+            exit 0
+          fi
+
+          for tex in "${files[@]}"; do
+            echo "Building PDF: $tex"
+            tex_dir=$(dirname "$tex")
+            tex_file=$(basename "$tex")
+            pushd "$tex_dir" >/dev/null
+            latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error "$tex_file"
+            popd >/dev/null
+          done
+
+      - name: Export DOCX with Pandoc
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          mkdir -p docs/paper-latex/export
+          files=(docs/paper-latex/*.tex)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No .tex files found under docs/paper-latex"
+            exit 0
+          fi
+
+          for tex in "${files[@]}"; do
+            base=$(basename "$tex" .tex)
+            out="docs/paper-latex/export/${base}.docx"
+            echo "Exporting DOCX: $tex -> $out"
+            pandoc "$tex" -o "$out" --from=latex --to=docx
+          done
+
+      - name: Package release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+
+          shopt -s nullglob
+          pdfs=(docs/paper-latex/*.pdf)
+          docxs=(docs/paper-latex/export/*.docx)
+
+          if [ ${#pdfs[@]} -gt 0 ]; then
+            zip -j release-assets/papers-pdf-${GITHUB_REF_NAME}.zip "${pdfs[@]}"
+          fi
+
+          if [ ${#docxs[@]} -gt 0 ]; then
+            zip -j release-assets/papers-docx-${GITHUB_REF_NAME}.zip "${docxs[@]}"
+          fi
+
+      - name: Create or update release with assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" release-assets/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              --title "Paper Release $GITHUB_REF_NAME" \
+              --notes "Automated paper artifacts (PDF and DOCX) for $GITHUB_REF_NAME." \
+              release-assets/*
+          fi

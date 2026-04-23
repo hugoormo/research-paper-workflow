@@ -49,6 +49,16 @@ GitHub Actions workflow `paper-build.yml` runs on push, PR, and manual dispatch.
   - `papers-pdf`
   - `papers-docx`
 
+## Release Build
+
+GitHub Actions workflow `paper-release.yml` runs on tag push (`v*`) and can also be run manually.
+
+- Builds PDF and DOCX outputs from all `docs/paper-latex/*.tex` files.
+- Packages outputs into release zip assets:
+  - `papers-pdf-<tag>.zip`
+  - `papers-docx-<tag>.zip`
+- Creates or updates the GitHub Release for the tag and uploads the assets.
+
 ## Notes
 
 - Keep LaTeX as the master source.
