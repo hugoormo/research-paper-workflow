@@ -41,7 +41,7 @@ powershell -ExecutionPolicy Bypass -File scripts/export-paper-docx.ps1 -PaperBas
 
 ## CI Build
 
-GitHub Actions workflow `paper-build.yml` runs on push, PR, and manual dispatch.
+GitHub Actions workflow `paper-build.yml` runs on version tag push (`v*`) and manual dispatch.
 
 - Builds PDF for all `docs/paper-latex/*.tex` files.
 - Exports DOCX for all `docs/paper-latex/*.tex` files.
@@ -64,11 +64,4 @@ GitHub Actions workflow `paper-release.yml` runs on tag push (`v*`) and can also
 - Keep LaTeX as the master source.
 - Treat DOCX as generated output for submission systems that require Word.
 - Maintain EN/DE versions in parallel to prevent structural drift.
-
-## Known CI Warnings
-
-You may see a GitHub Actions warning related to Node.js 20 deprecation during the platform transition period.
-
-- Cause: Some official actions (for example `actions/upload-artifact@v5`) may still run on Node.js 20 internally until a Node.js 24-native action release is published.
-- Impact: This is typically a warning only and does not indicate failed paper builds by itself.
-- Recommendation: Keep action versions up to date and periodically check for newer major versions of the affected actions.
+- Workflows are configured to opt JavaScript actions into Node.js 24.

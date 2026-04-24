@@ -10,6 +10,9 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+$scriptDir = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
+$repoRoot = Resolve-Path (Join-Path $scriptDir "..")
+
 function Resolve-Pandoc {
     $cmd = Get-Command pandoc -ErrorAction SilentlyContinue
     if ($null -eq $cmd) {
@@ -66,8 +69,9 @@ else {
 
 $failed = @()
 foreach ($lang in $targets) {
-    $texRel = Join-Path $PaperFolder ("{0}_{1}.tex" -f $PaperBaseName, $lang)
-    $docxRel = Join-Path $PaperFolder ("export/{0}_{1}.docx" -f $PaperBaseName, $lang)
+    $paperFolderAbs = Join-Path $repoRoot $PaperFolder
+    $texRel = Join-Path $paperFolderAbs ("{0}_{1}.tex" -f $PaperBaseName, $lang)
+    $docxRel = Join-Path $paperFolderAbs ("export/{0}_{1}.docx" -f $PaperBaseName, $lang)
 
     if (-not (Test-Path $texRel)) {
         $msg = "Missing source file: $texRel"

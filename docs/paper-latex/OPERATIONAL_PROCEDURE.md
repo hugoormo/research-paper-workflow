@@ -134,7 +134,7 @@ This gives portability plus controlled evolution.
 5. Every major update must compile before merge.
 
 ## 11. Optional Next Improvements
-- Add CI job to compile PDFs on each push.
+- Add CI job to compile PDFs on version tags (`v*`) plus manual dispatch.
 - Add terminology map file for EN/DE consistency (domain-specific glossary).
 
 ## 12. Included Utility Files
