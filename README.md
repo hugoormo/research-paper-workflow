@@ -41,7 +41,7 @@ powershell -ExecutionPolicy Bypass -File scripts/export-paper-docx.ps1 -PaperBas
 
 ## CI Build
 
-GitHub Actions workflow `paper-build.yml` runs on version tag push (`v*`) and manual dispatch.
+GitHub Actions workflow `paper-build.yml` runs on manual dispatch.
 
 - Builds PDF for all `docs/paper-latex/*.tex` files.
 - Exports DOCX for all `docs/paper-latex/*.tex` files.
