@@ -34,6 +34,45 @@ Reusable workflow for technical research papers in VS Code using:
 powershell -ExecutionPolicy Bypass -File scripts/export-paper-docx.ps1 -PaperBaseName "paper_<topic>" -Language both
 ```
 
+## Instantiation Prompt (for target repositories)
+
+Use this when you open chat in a target repository and want Copilot to instantiate this workflow with minimal back-and-forth.
+
+```text
+Please instantiate the research paper workflow from C:/Users/EORMOHU3W/GitHub_Repositories/research-paper-workflow into this repository.
+
+Scope:
+1. Copy and adapt the workflow only as needed for this repo.
+2. Keep existing project files and behavior intact.
+3. Configure the paper workflow for these manuscript files:
+- Papers/<your_english_paper_file>
+- Papers/<your_german_paper_file>
+
+Required behavior:
+1. Build workflow must be manual-dispatch only.
+2. Release workflow must run on version tags v* (and manual dispatch allowed).
+3. Keep Node 24 opt-in in workflows via FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true.
+4. Include required LaTeX dependencies for CI, including texlive-xetex.
+5. Include the local DOCX export script and ensure it resolves paths relative to repo root (not caller working directory).
+6. Update README and operational docs so they match the actual trigger behavior.
+7. Avoid introducing unrelated changes.
+
+Execution requirements:
+1. Implement directly in files (not just propose).
+2. Run a validation pass for workflow/script syntax.
+3. Show a concise summary of changed files and exact trigger logic.
+4. Commit changes with a clear message and push to main only after my confirmation.
+
+Optional add-on:
+If this repo uses Markdown manuscripts rather than LaTeX sources, adapt scripts/workflows accordingly and document that adaptation explicitly.
+```
+
+Short form prompt you can use first:
+
+```text
+Instantiate the paper workflow from C:/Users/EORMOHU3W/GitHub_Repositories/research-paper-workflow here and follow the Instantiation Prompt checklist from that README.
+```
+
 ## Workflow Documents
 
 - Procedure: `docs/paper-latex/OPERATIONAL_PROCEDURE.md`
