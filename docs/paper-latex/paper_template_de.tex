@@ -28,7 +28,7 @@
 %\geometry{verbose,tmargin=1.75cm,bmargin=3.95cm,lmargin=1.5cm,rmargin=1.5cm,headheight=1.25cm,footskip=1.25cm}
 \usepackage[labelsep=period, labelfont=bf, aboveskip=10pt, belowskip=2pt, font=small, font=it]{caption}
 
-\usepackage[english]{babel}
+\usepackage[ngerman]{babel}
 \uchyph=0
 \tolerance=1
 \emergencystretch=\maxdimen
@@ -353,34 +353,15 @@ Unless there are six authors or more give all authors' names; do not use ``et al
 \section*{Acknowledgements}
 The preferred spelling of the word `acknowledgment" in America is without an ``e" after the ``g". Avoid the stilted expression, ``One of us (R. B. G.) thanks . . ." Instead, try ``R. B. G. thanks". Put sponsor acknowledgments in the unnum-bered footnote on the first page.
 
-%\bibliographystyle{ieeetr}
-%\bibliography{WGE}
 \parskip=5pt
 \noindent \rule[0pt]{25em}{1pt}
 
 \parskip=10pt
-\noindent {\References{References}}
+\noindent {\References{Literaturverzeichnis}}
 \vspace{-6pt}
-\begin{list}{[\arabic{enumi}]}{\usecounter{enumi} %%
-\leftmargin=2em%%%%%%
-\labelsep=0em%%%%%
-\renewcommand{\makelabel}[1]{#1 \hfil}}%%
-\bibitem{1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529¨C551, April 1955. (references)
-\bibitem{2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp. 68¨C73.
-\bibitem{3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271¨C350.
-\bibitem{4} K. Elissa, ``Title of paper if known,'' unpublished.
-\bibitem{5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
-\bibitem{6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740¨C741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
-\bibitem{7} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 198.
-\bibitem{8} Krejcie, R. V. and D. W. Morgan (1970) Determining Sample Sizes for Research Activities. Educational and Psychological Measurement 30, 607-610.
-\bibitem{9} Kass, R. E. and A. E. Raftery (1995). Bayes Factors. Journal of the American Statistical Association 90, 773¨C794.
-\bibitem{10} Spiegelhalter, D. J., N. G. Best, B. P. Carlin, and A. van der Linde (2002). Bayesian Measures of Model Complexity and Fit (with discussion). Journal of the Royal Statistical Society: Series B 64, 583¨C639.
-\bibitem{11} Ebenebe, C. I., Anigbogu, C. C., Anizoba, M. A. and Ufele, A. N. (2013). Effect of various levels of Moringa Leaf Meal on the Egg Quality of Isa Brown Breed of Layers. Advances in Life Sciences and Technology 14: 45-49.
-\bibitem{12} Fahey, J. W., Zakmann, A. T., and Talalay, P. (2001). The chemical diversity and distribution of glucosinolates and Isothiocyanates among plants. Corrigendum Phytochemistry, 59: 200-237.
-\bibitem{13} Greg, M. E. (2008). Effect of enzymes on cellulose, European Journal of Applied Microbiology Biotechnology, 40: 167-171.
-\bibitem{14} Onunkwo, D. N and George, O. S (2015). Effects of Moringaoleifera leaf meal on the growth performance and carcass characteristics of broiler birds. IOSR Journal of Agriculture and Veterinary Science, 8(3II): 63-66.
-\bibitem{15} El Tazi, S. M. A. (2014). Effect of feeding different levels of Moringaoleifera leaf meal on the performance and carcass quality of broiler chicks. International Journal of Science and Research, 3(5): 147-151.
-\end{list}
+\renewcommand{\bibsection}{}
+\bibliographystyle{plainnat}
+\bibliography{../../bibliography/references}
 
 \end{multicols}
 \end{document}

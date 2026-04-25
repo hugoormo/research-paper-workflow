@@ -3,12 +3,15 @@
 Reusable workflow for technical research papers in VS Code using:
 - LaTeX as source of truth,
 - bilingual EN/DE manuscript maintenance,
+- centralized BibTeX bibliography shared across all papers,
 - optional DOCX export via Pandoc,
 - AI-assisted review and consistency checks.
 
 ## Repository Structure
 
 ```text
+/bibliography/
+  references.bib          ← central BibTeX database (shared by all papers)
 /docs/paper-latex/
   OPERATIONAL_PROCEDURE.md
   SUBMISSION_CHECKLIST.md
@@ -25,10 +28,11 @@ Reusable workflow for technical research papers in VS Code using:
 2. Rename template files to your paper topic:
    - `paper_<topic>_en.tex`
    - `paper_<topic>_de.tex`
-3. Install dependencies:
+3. Add your sources to `bibliography/references.bib` (see [Centralized Bibliography](#centralized-bibliography)).
+4. Install dependencies:
    - LaTeX distribution (TeX Live or MiKTeX)
    - Pandoc
-4. Export DOCX (optional):
+5. Export DOCX (optional):
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/export-paper-docx.ps1 -PaperBaseName "paper_<topic>" -Language both
@@ -54,8 +58,9 @@ Required behavior:
 3. Keep Node 24 opt-in in workflows via FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true.
 4. Include required LaTeX dependencies for CI, including texlive-xetex.
 5. Include the local DOCX export script and ensure it resolves paths relative to repo root (not caller working directory).
-6. Update README and operational docs so they match the actual trigger behavior.
-7. Avoid introducing unrelated changes.
+6. Copy bibliography/references.bib into the target repo and update the \bibliography{} path in each .tex file to point to it.
+7. Update README and operational docs so they match the actual trigger behavior.
+8. Avoid introducing unrelated changes.
 
 Execution requirements:
 1. Implement directly in files (not just propose).
@@ -72,6 +77,55 @@ Short form prompt you can use first:
 ```text
 Instantiate the paper workflow from C:/Users/EORMOHU3W/GitHub_Repositories/research-paper-workflow here and follow the Instantiation Prompt checklist from that README.
 ```
+
+## Centralized Bibliography
+
+All papers share a single BibTeX file at `bibliography/references.bib`. This allows you to build a personal source library that is reusable across papers.
+
+**Adding a source:**
+
+```bibtex
+@article{AuthorYear,
+  author  = {First Last},
+  title   = {Title of the Paper},
+  journal = {Journal Name},
+  volume  = {1},
+  pages   = {1--10},
+  year    = {2025}
+}
+```
+
+**Citing in a paper:**
+
+```latex
+As shown by \cite{AuthorYear}, ...
+```
+
+Each paper's `.tex` file references the shared file via:
+
+```latex
+\bibliographystyle{plainnat}
+\bibliography{../../bibliography/references}
+```
+
+Adjust the relative path if your paper is in a different directory depth.
+
+**Language behavior:**
+- `paper_*_en.tex` uses `\usepackage[english]{babel}` → heading renders as "References"
+- `paper_*_de.tex` uses `\usepackage[ngerman]{babel}` → heading renders as "Literaturverzeichnis"
+
+The `.bib` file itself is language-neutral; the same file serves both.
+
+**Build requirement:** The LaTeX build must run `bibtex` (or `biber`) after the first `pdflatex` pass:
+
+```bash
+pdflatex paper.tex
+bibtex paper
+pdflatex paper.tex
+pdflatex paper.tex
+```
+
+CI workflows must include this sequence and have `texlive-bibtex-extra` installed.
 
 ## Workflow Documents
 
@@ -103,4 +157,5 @@ GitHub Actions workflow `paper-release.yml` runs on tag push (`v*`) and can also
 - Keep LaTeX as the master source.
 - Treat DOCX as generated output for submission systems that require Word.
 - Maintain EN/DE versions in parallel to prevent structural drift.
+- Add all sources to `bibliography/references.bib`; never hardcode `\bibitem` entries in individual papers.
 - Workflows are configured to opt JavaScript actions into Node.js 24.
