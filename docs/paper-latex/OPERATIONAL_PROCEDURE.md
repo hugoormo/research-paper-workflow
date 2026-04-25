@@ -1,9 +1,10 @@
-# Operational Procedure: Reusable AI-Assisted Paper Workflow (LaTeX + Optional Word)
+# Operational Procedure: Reusable AI-Assisted Paper Workflow (Direct LaTeX + Optional Word)
 
 ## 1. Purpose
 This procedure defines a repeatable workflow for writing technical research papers in VS Code with:
-- LaTeX as the publication format,
+- direct LaTeX authoring as the primary method,
 - bilingual delivery (English/German),
+- centralized BibTeX bibliography reuse,
 - optional Word output when required by conferences or journals,
 - compatibility with Git-based version control and AI-assisted editing.
 
@@ -11,48 +12,63 @@ This procedure defines a repeatable workflow for writing technical research pape
 Use this workflow for any repository where you need one or more papers with:
 - structured scientific writing,
 - strict formatting templates,
-- reproducible build and review process.
+- reproducible build and review process,
+- low-friction daily authoring in VS Code.
 
 ## 3. Standard Folder Layout
 Use this folder layout inside any target repository:
 
 ```text
+/.vscode/
+  settings.json
+  tasks.json
+/bibliography/
+  references.bib
 /docs/paper-latex/
-  paper_<topic>_en.tex
-  paper_<topic>_de.tex
+  paper_author_en.tex
+  paper_author_de.tex
+  paper_template_en.tex
+  paper_template_de.tex
   sciencepg-template/
-    LaTeX-Manuscript_Template.tex
-    SciencePGLOGO.pdf
-    ...
   OPERATIONAL_PROCEDURE.md
-  build/
-  export/
 ```
 
 Guideline:
 - Keep publisher template source files unchanged in `sciencepg-template/`.
-- Keep your editable manuscript files at `/docs/paper-latex/` root.
-- Put generated artifacts only in `build/` and `export/`.
+- Write daily in `paper_author_en.tex` and `paper_author_de.tex`.
+- Use `paper_template_*.tex` only for final submission formatting.
+- Keep bibliography centralized in `bibliography/references.bib`.
+- Keep all generated LaTeX outputs in `docs/paper-latex/build` (never beside manuscript sources).
 
 ## 4. One-Time Setup Per Repository
-1. Copy the portable paper folder (`docs/paper-latex`) into the target repository.
-2. Keep both language files from day one (`*_en.tex`, `*_de.tex`) to avoid translation drift later.
-3. Install VS Code extension `LaTeX Workshop`.
+1. Copy `.vscode`, `bibliography`, and `docs/paper-latex` into the target repository.
+2. Keep both language author files from day one (`paper_author_en.tex`, `paper_author_de.tex`) to avoid drift.
+3. Install VS Code extensions:
+  - `james-yu.latex-workshop`
+  - `streetsidesoftware.code-spell-checker`
+  - `adamvoss.vscode-languagetool` (+ optional EN/DE language packs)
 4. Install local tooling:
-   - TeX distribution (TeX Live or MiKTeX)
-   - Pandoc (for optional Word export)
-5. Add LaTeX build artifacts to `.gitignore`.
+  - TeX distribution (MacTeX/TinyTeX/TeX Live/MiKTeX)
+  - Pandoc (optional DOCX export)
+5. Verify toolchain once:
+  - `xelatex`, `latexmk`, `bibtex`, `pandoc`
+6. Add LaTeX build artifacts to `.gitignore`.
+7. Set output routing as a fixed standard:
+  - LaTeX Workshop: `latex-workshop.latex.outDir = %DIR%/build`
+  - latexmk task args: `-outdir=build -auxdir=build`
 
 ## 5. Writing Workflow (Operational Cycle)
-1. Draft and revise content in `paper_<topic>_en.tex`.
-2. Mirror and adapt meaning (not literal wording) in `paper_<topic>_de.tex`.
+1. Draft and revise content directly in `paper_author_en.tex` or `paper_author_de.tex`.
+2. Keep EN and DE in parallel once structure stabilizes.
 3. Use AI for:
    - structure checks,
    - language improvements,
    - consistency checks between EN and DE versions,
    - citation and terminology consistency.
-4. Build PDF locally after each major section update.
-5. Commit only source changes and intentional assets (no temporary build noise).
+4. Add citations during writing from `bibliography/references.bib`.
+5. Build PDF locally after each major section update (LaTeX Workshop or VS Code task).
+6. At finalization, move content into `paper_template_en.tex` / `paper_template_de.tex` for publisher-specific formatting.
+7. Commit only source changes and intentional assets (no temporary build noise).
 
 ## 6. Quality Gates Before Submission
 Run these checks before publishing:
@@ -61,6 +77,7 @@ Run these checks before publishing:
 3. Figure/table captions are present and referenced in text.
 4. EN and DE versions have aligned section logic.
 5. Template metadata (author, DOI placeholder, journal line) is updated.
+6. Bibliography is generated through BibTeX (no inline `\bibitem` in manuscript files).
 
 ## 7. Word Conversion Reliability
 Short answer: conversion is useful, but not fully lossless for complex journal templates.
@@ -90,7 +107,15 @@ If needed, add bibliography and CSL options in a second step.
 - Treat DOCX as a delivery format, not the master source.
 - Always reserve time for final manual DOCX cleanup.
 
-## 8. Reuse Strategy Across Repositories
+## 8. VS Code One-Click Build Model
+Use repository tasks for consistent local execution:
+1. Build EN author paper
+2. Build DE author paper
+3. Clean LaTeX artifacts
+
+This avoids ad-hoc command drift across repositories and team members.
+
+## 9. Reuse Strategy Across Repositories
 You asked whether portable folder is enough or a dedicated repository is better.
 
 ### Option A: Portable folder copied manually
@@ -116,7 +141,7 @@ Use a dedicated repository as the canonical source, and consume it in projects a
 - a copied release bundle (ZIP), or
 - a Git submodule/subtree (if you want synchronized updates).
 
-## 9. Recommended Operating Model
+## 10. Recommended Operating Model
 For your multi-paper, multi-repository, bilingual use case:
 1. Create a dedicated repository, e.g. `research-paper-workflow`.
 2. Store template files, SOP, and optional helper scripts there.
@@ -126,17 +151,30 @@ For your multi-paper, multi-repository, bilingual use case:
 
 This gives portability plus controlled evolution.
 
-## 10. Minimal Governance Rules
+## 11. Minimal Governance Rules
 1. Master source is LaTeX.
 2. EN and DE are maintained in parallel.
 3. Word export is generated, never hand-maintained as primary source.
 4. No direct edits to publisher template originals; only to derived manuscript files.
-5. Every major update must compile before merge.
+5. Bibliography is centralized in `bibliography/references.bib`.
+6. Every major update must compile before merge.
+7. Generated artifacts must be redirected to `docs/paper-latex/build`.
 
-## 11. Optional Next Improvements
+## 12. Upgrading Existing Instantiations
+When upgrading repositories that already contain paper files:
+1. Add `bibliography/references.bib` (or create a symlink to a shared source).
+2. Replace inline `\bibitem` blocks with:
+  - `\bibliographystyle{plainnat}`
+  - `\bibliography{<relative-path>/references}`
+3. Add `.vscode/settings.json` and `.vscode/tasks.json`.
+4. Add author templates and keep publisher templates as final-stage files.
+5. Run a clean local compile for EN and DE.
+6. Normalize local build output location to `docs/paper-latex/build` and remove root-level LaTeX artifacts.
+
+## 13. Optional Next Improvements
 - Add CI job to compile PDFs on manual dispatch (release remains tag-triggered).
 - Add terminology map file for EN/DE consistency (domain-specific glossary).
 
-## 12. Included Utility Files
+## 14. Included Utility Files
 - DOCX export utility: `scripts/export-paper-docx.ps1`
 - Pre-submission QA list: `docs/paper-latex/SUBMISSION_CHECKLIST.md`

@@ -12,11 +12,17 @@ Reusable workflow for technical research papers in VS Code using:
 ```text
 /bibliography/
   references.bib          ← central BibTeX database (shared by all papers)
+/.vscode/
+  settings.json           ← LaTeX Workshop recipe/autobuild defaults
+  tasks.json              ← one-click EN/DE build + clean tasks
 /docs/paper-latex/
   OPERATIONAL_PROCEDURE.md
   SUBMISSION_CHECKLIST.md
+  paper_author_en.tex
+  paper_author_de.tex
   paper_template_en.tex
   paper_template_de.tex
+  build/                  ← generated LaTeX artifacts and PDFs (ignored)
   sciencepg-template/
 /scripts/
   export-paper-docx.ps1
@@ -25,18 +31,35 @@ Reusable workflow for technical research papers in VS Code using:
 ## Quick Start
 
 1. Copy this folder structure into any target research repository.
-2. Rename template files to your paper topic:
-   - `paper_<topic>_en.tex`
-   - `paper_<topic>_de.tex`
+2. Start from the lightweight author templates for daily writing:
+  - `docs/paper-latex/paper_author_en.tex`
+  - `docs/paper-latex/paper_author_de.tex`
 3. Add your sources to `bibliography/references.bib` (see [Centralized Bibliography](#centralized-bibliography)).
-4. Install dependencies:
-   - LaTeX distribution (TeX Live or MiKTeX)
-   - Pandoc
-5. Export DOCX (optional):
+4. Set up your VS Code environment (see [VS Code Setup (Direct LaTeX Authoring)](#vs-code-setup-direct-latex-authoring)).
+5. Build your author paper via VS Code tasks or LaTeX Workshop recipe.
+6. Export DOCX (optional):
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/export-paper-docx.ps1 -PaperBaseName "paper_<topic>" -Language both
 ```
+
+## VS Code Setup (Direct LaTeX Authoring)
+
+Recommended baseline for new instantiations:
+
+1. Install a TeX distribution (MacTeX/TinyTeX/TeX Live/MiKTeX) and Pandoc.
+2. Install extensions:
+  - `james-yu.latex-workshop`
+  - `streetsidesoftware.code-spell-checker`
+  - `adamvoss.vscode-languagetool` (+ optional language packs)
+3. Include `.vscode/settings.json` with a `latexmk -xelatex` recipe and auto-build-on-save.
+4. Route outputs to `docs/paper-latex/build` to keep source directories clean.
+5. Include `.vscode/tasks.json` with one-click tasks:
+  - Build EN author paper
+  - Build DE author paper
+  - Clean LaTeX artifacts
+
+This repository already contains the reference workspace configuration.
 
 ## Instantiation Prompt (for target repositories)
 
@@ -58,9 +81,15 @@ Required behavior:
 3. Keep Node 24 opt-in in workflows via FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true.
 4. Include required LaTeX dependencies for CI, including texlive-xetex.
 5. Include the local DOCX export script and ensure it resolves paths relative to repo root (not caller working directory).
-6. Copy bibliography/references.bib into the target repo and update the \bibliography{} path in each .tex file to point to it.
-7. Update README and operational docs so they match the actual trigger behavior.
-8. Avoid introducing unrelated changes.
+6. Prefer direct LaTeX authoring: instantiate `paper_author_en.tex` and `paper_author_de.tex` as working manuscripts.
+7. Keep publisher templates (`paper_template_en.tex`/`paper_template_de.tex`) for final formatting handoff.
+8. Wire centralized bibliography (`bibliography/references.bib`) and update `\bibliography{}` paths in each paper.
+9. For already-instantiated repositories, add a `bibliography` symlink or copy, then switch inline `\bibitem` blocks to BibTeX.
+10. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.
+11. Enforce artifact hygiene: route local LaTeX outputs to `docs/paper-latex/build` using `latex-workshop.latex.outDir`, `-outdir`, and `-auxdir`.
+12. Ensure `.gitignore` excludes LaTeX temporary files and `docs/paper-latex/build/`.
+13. Update README and operational docs so they match the actual trigger behavior.
+14. Avoid introducing unrelated changes.
 
 Execution requirements:
 1. Implement directly in files (not just propose).
@@ -155,7 +184,9 @@ GitHub Actions workflow `paper-release.yml` runs on tag push (`v*`) and can also
 ## Notes
 
 - Keep LaTeX as the master source.
+- Prefer direct authoring in LaTeX (`paper_author_*.tex`) over Markdown-to-LaTeX conversion.
 - Treat DOCX as generated output for submission systems that require Word.
 - Maintain EN/DE versions in parallel to prevent structural drift.
 - Add all sources to `bibliography/references.bib`; never hardcode `\bibitem` entries in individual papers.
+- Use publisher templates only for final formatting/submission phase.
 - Workflows are configured to opt JavaScript actions into Node.js 24.

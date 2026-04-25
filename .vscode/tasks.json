@@ -7,7 +7,7 @@
       "command": "zsh",
       "args": [
         "-lc",
-        "source \"$HOME/.zprofile\" 2>/dev/null || true; cd docs/paper-latex && latexmk -xelatex -interaction=nonstopmode paper_author_en.tex"
+        "source \"$HOME/.zprofile\" 2>/dev/null || true; cd docs/paper-latex && latexmk -xelatex -interaction=nonstopmode -outdir=build -auxdir=build paper_author_en.tex"
       ],
       "group": "build",
       "problemMatcher": []
@@ -18,7 +18,7 @@
       "command": "zsh",
       "args": [
         "-lc",
-        "source \"$HOME/.zprofile\" 2>/dev/null || true; cd docs/paper-latex && latexmk -xelatex -interaction=nonstopmode paper_author_de.tex"
+        "source \"$HOME/.zprofile\" 2>/dev/null || true; cd docs/paper-latex && latexmk -xelatex -interaction=nonstopmode -outdir=build -auxdir=build paper_author_de.tex"
       ],
       "group": "build",
       "problemMatcher": []
@@ -29,7 +29,7 @@
       "command": "zsh",
       "args": [
         "-lc",
-        "source \"$HOME/.zprofile\" 2>/dev/null || true; cd docs/paper-latex && latexmk -C paper_author_en.tex && latexmk -C paper_author_de.tex"
+        "source \"$HOME/.zprofile\" 2>/dev/null || true; cd docs/paper-latex && rm -rf build && latexmk -C paper_author_en.tex && latexmk -C paper_author_de.tex"
       ],
       "problemMatcher": []
     }

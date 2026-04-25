@@ -3,10 +3,17 @@
 ## Scope
 Use this checklist before submitting either PDF or DOCX versions.
 
+Authoring model:
+- Daily writing in `paper_author_en.tex` / `paper_author_de.tex`
+- Final venue formatting in `paper_template_en.tex` / `paper_template_de.tex`
+
 ## Source Integrity
-- [ ] English source compiles: paper_<topic>_en.tex
-- [ ] German source compiles: paper_<topic>_de.tex
+- [ ] English author source compiles: paper_author_en.tex
+- [ ] German author source compiles: paper_author_de.tex
+- [ ] If submission-ready, final template files compile: paper_template_en.tex / paper_template_de.tex
 - [ ] No unresolved references or citation warnings remain
+- [ ] Bibliography is generated via BibTeX from bibliography/references.bib
+- [ ] No inline `\bibitem` blocks remain in manuscript files
 - [ ] All figures and tables are present and referenced in text
 
 ## Metadata Completeness
@@ -22,6 +29,7 @@ Use this checklist before submitting either PDF or DOCX versions.
 - [ ] Claims, results, and conclusions are equivalent in meaning
 
 ## Reproducibility and Versioning
+- [ ] VS Code task build passes for EN and DE (or equivalent latexmk commands)
 - [ ] Build artifacts are not committed accidentally
 - [ ] Source changes are committed with clear message
 - [ ] References and data sources are traceable
