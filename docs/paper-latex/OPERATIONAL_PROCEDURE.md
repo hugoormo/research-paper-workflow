@@ -22,13 +22,15 @@ Use this folder layout inside any target repository:
 /.vscode/
   settings.json
   tasks.json
-/bibliography/
-  references.bib
+/bibliography-shared/            (Git submodule: research-paper-workflow)
+  bibliography/
+    references.bib
 /docs/paper-latex/
   paper_author_en.tex
   paper_author_de.tex
   paper_template_en.tex
   paper_template_de.tex
+  .latexmkrc
   sciencepg-template/
   OPERATIONAL_PROCEDURE.md
 ```
@@ -37,23 +39,33 @@ Guideline:
 - Keep publisher template source files unchanged in `sciencepg-template/`.
 - Write daily in `paper_author_en.tex` and `paper_author_de.tex`.
 - Use `paper_template_*.tex` only for final submission formatting.
-- Keep bibliography centralized in `bibliography/references.bib`.
+- Keep bibliography centralized in `bibliography-shared/bibliography/references.bib`.
 - Keep all generated LaTeX outputs in `docs/paper-latex/build` (never beside manuscript sources).
 
+Mandatory bibliography integration rule:
+- Do not keep a local duplicate `bibliography/references.bib` in each paper repository.
+- Add `research-paper-workflow` as a Git submodule at `bibliography-shared`.
+- In manuscript files, use `\bibliography{references}` (not a fragile relative path).
+- Configure `docs/paper-latex/.latexmkrc` with `BIBINPUTS` so BibTeX can resolve `references.bib` from the submodule.
+
 ## 4. One-Time Setup Per Repository
-1. Copy `.vscode`, `bibliography`, and `docs/paper-latex` into the target repository.
-2. Keep both language author files from day one (`paper_author_en.tex`, `paper_author_de.tex`) to avoid drift.
-3. Install VS Code extensions:
+1. Copy `.vscode` and `docs/paper-latex` into the target repository.
+2. Add the central workflow repository as a submodule:
+  - `git submodule add https://github.com/hugoormo/research-paper-workflow bibliography-shared`
+3. Ensure `docs/paper-latex/.latexmkrc` contains:
+  - `$ENV{BIBINPUTS} = "../bibliography-shared/bibliography:" . ($ENV{BIBINPUTS} // '');`
+4. Keep both language author files from day one (`paper_author_en.tex`, `paper_author_de.tex`) to avoid drift.
+5. Install VS Code extensions:
   - `james-yu.latex-workshop`
   - `streetsidesoftware.code-spell-checker`
   - `adamvoss.vscode-languagetool` (+ optional EN/DE language packs)
-4. Install local tooling:
+6. Install local tooling:
   - TeX distribution (MacTeX/TinyTeX/TeX Live/MiKTeX)
   - Pandoc (optional DOCX export)
-5. Verify toolchain once:
+7. Verify toolchain once:
   - `xelatex`, `latexmk`, `bibtex`, `pandoc`
-6. Add LaTeX build artifacts to `.gitignore`.
-7. Set output routing as a fixed standard:
+8. Add LaTeX build artifacts to `.gitignore`.
+9. Set output routing as a fixed standard:
   - LaTeX Workshop: `latex-workshop.latex.outDir = %DIR%/build`
   - latexmk task args: `-outdir=build -auxdir=build`
 
@@ -65,7 +77,7 @@ Guideline:
    - language improvements,
    - consistency checks between EN and DE versions,
    - citation and terminology consistency.
-4. Add citations during writing from `bibliography/references.bib`.
+4. Add citations during writing from `bibliography-shared/bibliography/references.bib`.
 5. Build PDF locally after each major section update (LaTeX Workshop or VS Code task).
 6. At finalization, move content into `paper_template_en.tex` / `paper_template_de.tex` for publisher-specific formatting.
 7. Commit only source changes and intentional assets (no temporary build noise).
@@ -78,6 +90,7 @@ Run these checks before publishing:
 4. EN and DE versions have aligned section logic.
 5. Template metadata (author, DOI placeholder, journal line) is updated.
 6. Bibliography is generated through BibTeX (no inline `\bibitem` in manuscript files).
+7. Manuscripts must keep `\bibliography{references}` and rely on `BIBINPUTS` from `.latexmkrc` for lookup.
 
 ## 7. Word Conversion Reliability
 Short answer: conversion is useful, but not fully lossless for complex journal templates.
@@ -146,7 +159,7 @@ For your multi-paper, multi-repository, bilingual use case:
 1. Create a dedicated repository, e.g. `research-paper-workflow`.
 2. Store template files, SOP, and optional helper scripts there.
 3. Tag versions (`v1.0.0`, `v1.1.0`) when stable.
-4. In each research repository, import a tagged version as a portable folder.
+4. In each research repository, add `research-paper-workflow` as submodule `bibliography-shared` and use the SOP from there as the operational baseline.
 5. Upgrade only when needed, not continuously.
 
 This gives portability plus controlled evolution.
@@ -156,20 +169,23 @@ This gives portability plus controlled evolution.
 2. EN and DE are maintained in parallel.
 3. Word export is generated, never hand-maintained as primary source.
 4. No direct edits to publisher template originals; only to derived manuscript files.
-5. Bibliography is centralized in `bibliography/references.bib`.
+5. Bibliography is centralized in `bibliography-shared/bibliography/references.bib` via submodule.
 6. Every major update must compile before merge.
 7. Generated artifacts must be redirected to `docs/paper-latex/build`.
 
 ## 12. Upgrading Existing Instantiations
 When upgrading repositories that already contain paper files:
-1. Add `bibliography/references.bib` (or create a symlink to a shared source).
-2. Replace inline `\bibitem` blocks with:
+1. Add submodule `bibliography-shared` that points to `research-paper-workflow`.
+2. Remove local `bibliography/` copies to prevent drift.
+3. Replace inline `\bibitem` blocks with:
   - `\bibliographystyle{plainnat}`
-  - `\bibliography{<relative-path>/references}`
-3. Add `.vscode/settings.json` and `.vscode/tasks.json`.
-4. Add author templates and keep publisher templates as final-stage files.
-5. Run a clean local compile for EN and DE.
-6. Normalize local build output location to `docs/paper-latex/build` and remove root-level LaTeX artifacts.
+  - `\bibliography{references}`
+4. Add or update `docs/paper-latex/.latexmkrc` with:
+  - `$ENV{BIBINPUTS} = "../bibliography-shared/bibliography:" . ($ENV{BIBINPUTS} // '');`
+5. Add `.vscode/settings.json` and `.vscode/tasks.json`.
+6. Add author templates and keep publisher templates as final-stage files.
+7. Run a clean local compile for EN and DE.
+8. Normalize local build output location to `docs/paper-latex/build` and remove root-level LaTeX artifacts.
 
 ## 13. Optional Next Improvements
 - Add CI job to compile PDFs on manual dispatch (release remains tag-triggered).
