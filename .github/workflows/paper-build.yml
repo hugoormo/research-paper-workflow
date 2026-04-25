@@ -24,6 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           shopt -s nullglob
+          mkdir -p docs/paper-latex/export
           files=(docs/paper-latex/*.tex)
           if [ ${#files[@]} -eq 0 ]; then
             echo "No .tex files found under docs/paper-latex"
@@ -34,12 +35,16 @@ jobs:
             echo "Building PDF: $tex"
             tex_dir=$(dirname "$tex")
             tex_file=$(basename "$tex")
+            base=$(basename "$tex" .tex)
             pushd "$tex_dir" >/dev/null
-            latexmk -pdf -interaction=nonstopmode -halt-on-error -file-line-error "$tex_file"
+            latexmk -xelatex -interaction=nonstopmode -halt-on-error -file-line-error -outdir=build -auxdir=build "$tex_file"
+            if [ -f "build/${base}.pdf" ]; then
+              cp "build/${base}.pdf" "export/${base}.pdf"
+            fi
             popd >/dev/null
           done
 
-      - name: Export DOCX with Pandoc
+      - name: Optional DOCX export with Pandoc
         shell: bash
         run: |
           set -euo pipefail
@@ -55,14 +60,18 @@ jobs:
             base=$(basename "$tex" .tex)
             out="docs/paper-latex/export/${base}.docx"
             echo "Exporting DOCX: $tex -> $out"
-            pandoc "$tex" -o "$out" --from=latex --to=docx
+            if pandoc "$tex" -o "$out" --from=latex --to=docx; then
+              echo "DOCX export for $base succeeded"
+            else
+              echo "DOCX export for $base failed; continuing"
+            fi
           done
 
       - name: Upload PDF artifacts
         uses: actions/upload-artifact@v5
         with:
           name: papers-pdf
-          path: docs/paper-latex/*.pdf
+          path: docs/paper-latex/export/*.pdf
           if-no-files-found: warn
 
       - name: Upload DOCX artifacts
