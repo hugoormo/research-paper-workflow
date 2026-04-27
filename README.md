@@ -30,6 +30,12 @@ Reusable workflow for technical research papers in VS Code using:
 
 ## Quick Start
 
+If you consume this workflow as a git submodule in another repository, initialize it once from the host repository root:
+
+```bash
+git submodule update --init --recursive
+```
+
 1. Copy this folder structure into any target research repository.
 2. Start from the lightweight author templates for daily writing:
   - `docs/paper-latex/paper_author_en.tex`
@@ -53,11 +59,14 @@ Recommended baseline for new instantiations:
   - `streetsidesoftware.code-spell-checker`
   - `adamvoss.vscode-languagetool` (+ optional language packs)
 3. Include `.vscode/settings.json` with a `latexmk -xelatex` recipe and auto-build-on-save.
+  - Do not hardcode OS-specific PATH entries in `latex-workshop.latex.tools[*].env`.
 4. Route outputs to `docs/paper-latex/build` to keep source directories clean.
 5. Include `.vscode/tasks.json` with one-click tasks:
   - Build EN author paper
   - Build DE author paper
   - Clean LaTeX artifacts
+  - Use cross-platform task commands (`command: latexmk`) and add TinyTeX PATH only under `osx.options.env`.
+6. Add `docs/paper-latex/.latexmkrc` and set `BIBINPUTS` with OS-aware separators so BibTeX resolves the shared bibliography from `build/` runs.
 
 This repository already contains the reference workspace configuration.
 
@@ -88,8 +97,11 @@ Required behavior:
 10. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.
 11. Enforce artifact hygiene: route local LaTeX outputs to `docs/paper-latex/build` using `latex-workshop.latex.outDir`, `-outdir`, and `-auxdir`.
 12. Ensure `.gitignore` excludes LaTeX temporary files and `docs/paper-latex/build/`.
-13. Update README and operational docs so they match the actual trigger behavior.
-14. Avoid introducing unrelated changes.
+13. Keep VS Code LaTeX config cross-platform: no macOS-only `latex-workshop.latex.tools[*].env.PATH` overrides.
+14. Configure `.vscode/tasks.json` with cross-platform `latexmk` commands and add TinyTeX PATH only under `osx.options.env`.
+15. Add `docs/paper-latex/.latexmkrc` with OS-aware `BIBINPUTS` and keep paper files at `\bibliography{references}`.
+16. Update README and operational docs so they match the actual trigger behavior.
+17. Avoid introducing unrelated changes.
 
 Execution requirements:
 1. Implement directly in files (not just propose).
@@ -130,14 +142,14 @@ All papers share a single BibTeX file at `bibliography/references.bib`. This all
 As shown by \cite{AuthorYear}, ...
 ```
 
-Each paper's `.tex` file references the shared file via:
+Each paper's `.tex` file should use key-only bibliography lookup:
 
 ```latex
 \bibliographystyle{plainnat}
-\bibliography{../../bibliography/references}
+\bibliography{references}
 ```
 
-Adjust the relative path if your paper is in a different directory depth.
+The shared path is resolved in `docs/paper-latex/.latexmkrc` via `BIBINPUTS`, which avoids path issues when `latexmk` runs with `-outdir` and `-auxdir`.
 
 **Language behavior:**
 - `paper_*_en.tex` uses `\usepackage[english]{babel}` → heading renders as "References"

@@ -4,9 +4,6 @@
     {
       "name": "latexmk_xelatex",
       "command": "latexmk",
-      "env": {
-        "PATH": "/Users/hugoormoarmengol/Library/TinyTeX/bin/universal-darwin:${env:PATH}"
-      },
       "args": [
         "-xelatex",
         "-interaction=nonstopmode",

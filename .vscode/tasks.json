@@ -4,33 +4,68 @@
     {
       "label": "Paper: Build EN (author)",
       "type": "shell",
-      "command": "zsh",
+      "command": "latexmk",
       "args": [
-        "-lc",
-        "source \"$HOME/.zprofile\" 2>/dev/null || true; export PATH=\"$HOME/Library/TinyTeX/bin/universal-darwin:$PATH\"; cd docs/paper-latex && latexmk -xelatex -interaction=nonstopmode -outdir=build -auxdir=build paper_author_en.tex"
+        "-xelatex",
+        "-interaction=nonstopmode",
+        "-outdir=build",
+        "-auxdir=build",
+        "paper_author_en.tex"
       ],
+      "options": {
+        "cwd": "${workspaceFolder}/docs/paper-latex"
+      },
+      "osx": {
+        "options": {
+          "cwd": "${workspaceFolder}/docs/paper-latex",
+          "env": {
+            "PATH": "${env:PATH}:${env:HOME}/Library/TinyTeX/bin/universal-darwin"
+          }
+        }
+      },
       "group": "build",
       "problemMatcher": []
     },
     {
       "label": "Paper: Build DE (author)",
       "type": "shell",
-      "command": "zsh",
+      "command": "latexmk",
       "args": [
-        "-lc",
-        "source \"$HOME/.zprofile\" 2>/dev/null || true; export PATH=\"$HOME/Library/TinyTeX/bin/universal-darwin:$PATH\"; cd docs/paper-latex && latexmk -xelatex -interaction=nonstopmode -outdir=build -auxdir=build paper_author_de.tex"
+        "-xelatex",
+        "-interaction=nonstopmode",
+        "-outdir=build",
+        "-auxdir=build",
+        "paper_author_de.tex"
       ],
+      "options": {
+        "cwd": "${workspaceFolder}/docs/paper-latex"
+      },
+      "osx": {
+        "options": {
+          "cwd": "${workspaceFolder}/docs/paper-latex",
+          "env": {
+            "PATH": "${env:PATH}:${env:HOME}/Library/TinyTeX/bin/universal-darwin"
+          }
+        }
+      },
       "group": "build",
       "problemMatcher": []
     },
     {
       "label": "Paper: Clean LaTeX artifacts",
       "type": "shell",
-      "command": "zsh",
-      "args": [
-        "-lc",
-        "source \"$HOME/.zprofile\" 2>/dev/null || true; export PATH=\"$HOME/Library/TinyTeX/bin/universal-darwin:$PATH\"; cd docs/paper-latex && rm -rf build && latexmk -C paper_author_en.tex && latexmk -C paper_author_de.tex"
-      ],
+      "command": "latexmk -C paper_author_en.tex; latexmk -C paper_author_de.tex",
+      "options": {
+        "cwd": "${workspaceFolder}/docs/paper-latex"
+      },
+      "osx": {
+        "options": {
+          "cwd": "${workspaceFolder}/docs/paper-latex",
+          "env": {
+            "PATH": "${env:PATH}:${env:HOME}/Library/TinyTeX/bin/universal-darwin"
+          }
+        }
+      },
       "problemMatcher": []
     }
   ]

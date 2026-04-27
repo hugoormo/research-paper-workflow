@@ -24,8 +24,11 @@ Required behavior:
 10. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.
 11. Enforce artifact hygiene: route local LaTeX outputs to `docs/paper-latex/build` using `latex-workshop.latex.outDir`, `-outdir`, and `-auxdir`.
 12. Ensure `.gitignore` excludes LaTeX temporary files and `docs/paper-latex/build/`.
-13. Update README and operational docs so they match the actual trigger behavior.
-14. Avoid introducing unrelated changes.
+13. Keep VS Code LaTeX config cross-platform: no macOS-only `latex-workshop.latex.tools[*].env.PATH` overrides.
+14. Configure `.vscode/tasks.json` with cross-platform `latexmk` commands and add TinyTeX PATH only under `osx.options.env`.
+15. Add `docs/paper-latex/.latexmkrc` with OS-aware `BIBINPUTS` and keep paper files at `\bibliography{references}`.
+16. Update README and operational docs so they match the actual trigger behavior.
+17. Avoid introducing unrelated changes.
 
 Execution requirements:
 1. Implement directly in files (not just propose).
