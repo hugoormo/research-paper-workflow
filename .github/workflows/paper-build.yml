@@ -25,9 +25,10 @@ jobs:
           set -euo pipefail
           shopt -s nullglob
           mkdir -p docs/paper-latex/export
-          files=(docs/paper-latex/*.tex)
+          # Build only author manuscripts (paper_*_en.tex, paper_*_de.tex), skip templates
+          files=(docs/paper-latex/paper_*_{en,de}.tex)
           if [ ${#files[@]} -eq 0 ]; then
-            echo "No .tex files found under docs/paper-latex"
+            echo "No author manuscript .tex files found under docs/paper-latex"
             exit 0
           fi
 
