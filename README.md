@@ -67,7 +67,9 @@ Recommended baseline for new instantiations:
   - Build DE author paper
   - Clean LaTeX artifacts
   - Use cross-platform task commands (`command: latexmk`) and add TinyTeX PATH only under `osx.options.env`.
-6. Add `docs/paper-latex/.latexmkrc` and set `BIBINPUTS` with OS-aware separators so BibTeX resolves the shared bibliography from `build/` runs.
+6. Set `editor.wordWrap` to `on` in the target workspace settings for comfortable prose editing.
+7. Keep LaTeX prose formatted with one sentence per line (Sentence-Per-Line) for cleaner diffs and easier review.
+8. Add `docs/paper-latex/.latexmkrc` and set `BIBINPUTS` with OS-aware separators so BibTeX resolves the shared bibliography from `build/` runs.
 
 This repository already contains the reference workspace configuration.
 
@@ -96,8 +98,10 @@ Required behavior:
 8. Keep VS Code LaTeX config cross-platform: no macOS-only `latex-workshop.latex.tools[*].env.PATH` overrides.
 9. Configure `.vscode/tasks.json` with cross-platform `latexmk` commands and add TinyTeX PATH only under `osx.options.env`.
 10. Add `docs/paper-latex/.latexmkrc` with OS-aware `BIBINPUTS` and keep paper files at `\bibliography{references}`.
-11. Update README and operational docs so they match the actual build procedures.
-12. Avoid introducing unrelated changes.
+11. Set `editor.wordWrap` to `on` in `.vscode/settings.json` of the target workspace.
+12. Format LaTeX prose using one sentence per line (Sentence-Per-Line) in author manuscripts.
+13. Update README and operational docs so they match the actual build procedures.
+14. Avoid introducing unrelated changes.
 
 Execution requirements:
 1. Implement directly in files (not just propose).

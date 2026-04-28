@@ -66,6 +66,8 @@ Mandatory bibliography integration rule:
 9. Set output routing as a fixed standard:
   - LaTeX Workshop: `latex-workshop.latex.outDir = %DIR%/build`
   - latexmk task args: `-outdir=build -auxdir=build`
+10. Set `editor.wordWrap` to `on` in the target workspace settings (`.vscode/settings.json`).
+11. Enforce one sentence per line (Sentence-Per-Line) for LaTeX prose in manuscript files.
 
 ## 5. Writing Workflow (Operational Cycle)
 1. Draft and revise content directly in `paper_author_en.tex` or `paper_author_de.tex`.
@@ -78,7 +80,8 @@ Mandatory bibliography integration rule:
 4. Add citations during writing from `bibliography-shared/bibliography/references.bib`.
 5. Build PDF locally after each major section update (LaTeX Workshop or VS Code task).
 6. If a venue requires its own submission class or template, add that material only in the target repository under `publisher_templates/` and adapt the final submission manuscript there.
-7. Commit only source changes and intentional assets (no temporary build noise).
+7. Keep prose in sentence-per-line layout so each sentence occupies exactly one source line.
+8. Commit only source changes and intentional assets (no temporary build noise).
 
 ## 6. Quality Gates Before Submission
 Run these checks before publishing:
