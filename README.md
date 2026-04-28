@@ -86,32 +86,26 @@ Scope:
 - Papers/<your_german_paper_file>
 
 Required behavior:
-1. Build workflow must be manual-dispatch only.
-2. Release workflow must run on version tags v* (and manual dispatch allowed).
-3. Keep Node 24 opt-in in workflows via FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true.
-4. Include required LaTeX dependencies for CI, including texlive-xetex.
-5. Include the local DOCX export script and ensure it resolves paths relative to repo root (not caller working directory).
-6. Prefer direct LaTeX authoring: instantiate `paper_author_en.tex` and `paper_author_de.tex` as working manuscripts.
-7. If the target repo needs venue-specific submission assets, place them under `docs/paper-latex/publisher_templates/`; do not add publisher-specific files back to this shared workflow repository.
-8. Wire centralized bibliography (`bibliography/references.bib`) and update `\bibliography{}` paths in each paper.
-9. For already-instantiated repositories, add a `bibliography` symlink or copy, then switch inline `\bibitem` blocks to BibTeX.
-10. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.
-11. Enforce artifact hygiene: route local LaTeX outputs to `docs/paper-latex/build` using `latex-workshop.latex.outDir`, `-outdir`, and `-auxdir`.
-12. Ensure `.gitignore` excludes LaTeX temporary files and `docs/paper-latex/build/`.
-13. Keep VS Code LaTeX config cross-platform: no macOS-only `latex-workshop.latex.tools[*].env.PATH` overrides.
-14. Configure `.vscode/tasks.json` with cross-platform `latexmk` commands and add TinyTeX PATH only under `osx.options.env`.
-15. Add `docs/paper-latex/.latexmkrc` with OS-aware `BIBINPUTS` and keep paper files at `\bibliography{references}`.
-16. Update README and operational docs so they match the actual trigger behavior.
-17. Avoid introducing unrelated changes.
+1. Prefer direct LaTeX authoring: instantiate `paper_author_en.tex` and `paper_author_de.tex` as working manuscripts.
+2. If the target repo needs venue-specific submission assets, place them under `docs/paper-latex/publisher_templates/`; do not add publisher-specific files back to this shared workflow repository.
+3. Wire centralized bibliography (`bibliography/references.bib`) and update `\bibliography{}` paths in each paper.
+4. For already-instantiated repositories, add a `bibliography` symlink or copy, then switch inline `\bibitem` blocks to BibTeX.
+5. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.
+6. Enforce artifact hygiene: route local LaTeX outputs to `docs/paper-latex/build` using `latex-workshop.latex.outDir`, `-outdir`, and `-auxdir`.
+7. Ensure `.gitignore` excludes LaTeX temporary files and `docs/paper-latex/build/`.
+8. Keep VS Code LaTeX config cross-platform: no macOS-only `latex-workshop.latex.tools[*].env.PATH` overrides.
+9. Configure `.vscode/tasks.json` with cross-platform `latexmk` commands and add TinyTeX PATH only under `osx.options.env`.
+10. Add `docs/paper-latex/.latexmkrc` with OS-aware `BIBINPUTS` and keep paper files at `\bibliography{references}`.
+11. Update README and operational docs so they match the actual build procedures.
+12. Avoid introducing unrelated changes.
 
 Execution requirements:
 1. Implement directly in files (not just propose).
-2. Run a validation pass for workflow/script syntax.
-3. Show a concise summary of changed files and exact trigger logic.
-4. Commit changes with a clear message and push to main only after my confirmation.
+2. Verify LaTeX build works locally (xelatex, latexmk, bibtex).
+3. Show a concise summary of changed files and local build verification.
 
 Optional add-on:
-If this repo uses Markdown manuscripts rather than LaTeX sources, adapt scripts/workflows accordingly and document that adaptation explicitly.
+If the target repo uses Markdown manuscripts rather than LaTeX sources, adapt the export script accordingly and document that adaptation explicitly.
 ```
 
 Short form prompt you can use first:
@@ -158,16 +152,7 @@ The shared path is resolved in `docs/paper-latex/.latexmkrc` via `BIBINPUTS`, wh
 
 The `.bib` file itself is language-neutral; the same file serves both.
 
-**Build requirement:** The LaTeX build must run `bibtex` (or `biber`) after the first `pdflatex` pass:
-
-```bash
-pdflatex paper.tex
-bibtex paper
-pdflatex paper.tex
-pdflatex paper.tex
-```
-
-CI workflows must include this sequence and have `texlive-bibtex-extra` installed.
+**Build requirement:** The LaTeX build must run `bibtex` (or `biber`) after the first `pdflatex` pass. This sequence is already configured in `.vscode/tasks.json` and `.latexmkrc`:
 
 ## Documentation
 
