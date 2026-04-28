@@ -172,6 +172,7 @@ This gives portability plus controlled evolution.
 5. Bibliography is centralized in `bibliography-shared/bibliography/references.bib` via submodule.
 6. Every major update must compile before merge.
 7. Generated artifacts must be redirected to `docs/paper-latex/build`.
+8. Always use a non-breaking space (`~`) before citation commands (`\citep` or `\cite`) to prevent awkward line breaks between text and citations. Example: `doctrine~\citep{ref}` instead of `doctrine \citep{ref}`.
 
 ## 12. Upgrading Existing Instantiations
 When upgrading repositories that already contain paper files:
