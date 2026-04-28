@@ -169,30 +169,10 @@ pdflatex paper.tex
 
 CI workflows must include this sequence and have `texlive-bibtex-extra` installed.
 
-## Workflow Documents
+## Documentation
 
 - Procedure: `docs/paper-latex/OPERATIONAL_PROCEDURE.md`
 - QA checklist: `docs/paper-latex/SUBMISSION_CHECKLIST.md`
-
-## CI Build
-
-GitHub Actions workflow `paper-build.yml` runs on manual dispatch.
-
-- Builds PDF for all `docs/paper-latex/*.tex` files.
-- Exports DOCX for all `docs/paper-latex/*.tex` files.
-- Publishes artifacts as:
-  - `papers-pdf`
-  - `papers-docx`
-
-## Release Build
-
-GitHub Actions workflow `paper-release.yml` runs on tag push (`v*`) and can also be run manually.
-
-- Builds PDF and DOCX outputs from all `docs/paper-latex/*.tex` files.
-- Packages outputs into release zip assets:
-  - `papers-pdf-<tag>.zip`
-  - `papers-docx-<tag>.zip`
-- Creates or updates the GitHub Release for the tag and uploads the assets.
 
 ## Notes
 
@@ -202,4 +182,4 @@ GitHub Actions workflow `paper-release.yml` runs on tag push (`v*`) and can also
 - Maintain EN/DE versions in parallel to prevent structural drift.
 - Add all sources to `bibliography/references.bib`; never hardcode `\bibitem` entries in individual papers.
 - Keep this repository publisher-neutral; add venue-specific templates only inside downstream instantiations under `docs/paper-latex/publisher_templates/`.
-- Workflows are configured to opt JavaScript actions into Node.js 24.
+- Build and export workflows are local-only (no CI); use VS Code tasks or direct LaTeX commands.

@@ -187,7 +187,6 @@ When upgrading repositories that already contain paper files:
 8. Normalize local build output location to `docs/paper-latex/build` and remove root-level LaTeX artifacts.
 
 ## 13. Optional Next Improvements
-- Add CI job to compile PDFs on manual dispatch (release remains tag-triggered).
 - Add terminology map file for EN/DE consistency (domain-specific glossary).
 
 ## 14. Included Utility Files
