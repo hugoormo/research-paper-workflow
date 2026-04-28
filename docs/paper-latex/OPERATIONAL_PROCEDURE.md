@@ -11,7 +11,7 @@ This procedure defines a repeatable workflow for writing technical research pape
 ## 2. Scope
 Use this workflow for any repository where you need one or more papers with:
 - structured scientific writing,
-- strict formatting templates,
+- optional venue-specific formatting added only in the target instantiation,
 - reproducible build and review process,
 - low-friction daily authoring in VS Code.
 
@@ -28,17 +28,15 @@ Use this folder layout inside any target repository:
 /docs/paper-latex/
   paper_author_en.tex
   paper_author_de.tex
-  paper_template_en.tex
-  paper_template_de.tex
   .latexmkrc
-  sciencepg-template/
+  publisher_templates/
   OPERATIONAL_PROCEDURE.md
 ```
 
 Guideline:
-- Keep publisher template source files unchanged in `sciencepg-template/`.
+- Keep this shared workflow repository publisher-neutral.
 - Write daily in `paper_author_en.tex` and `paper_author_de.tex`.
-- Use `paper_template_*.tex` only for final submission formatting.
+- Add venue-specific submission templates only inside target repositories under `publisher_templates/`.
 - Keep bibliography centralized in `bibliography-shared/bibliography/references.bib`.
 - Keep all generated LaTeX outputs in `docs/paper-latex/build` (never beside manuscript sources).
 
@@ -79,7 +77,7 @@ Mandatory bibliography integration rule:
    - citation and terminology consistency.
 4. Add citations during writing from `bibliography-shared/bibliography/references.bib`.
 5. Build PDF locally after each major section update (LaTeX Workshop or VS Code task).
-6. At finalization, move content into `paper_template_en.tex` / `paper_template_de.tex` for publisher-specific formatting.
+6. If a venue requires its own submission class or template, add that material only in the target repository under `publisher_templates/` and adapt the final submission manuscript there.
 7. Commit only source changes and intentional assets (no temporary build noise).
 
 ## 6. Quality Gates Before Submission
@@ -168,7 +166,7 @@ This gives portability plus controlled evolution.
 1. Master source is LaTeX.
 2. EN and DE are maintained in parallel.
 3. Word export is generated, never hand-maintained as primary source.
-4. No direct edits to publisher template originals; only to derived manuscript files.
+4. This shared workflow repository stays publisher-neutral; venue-specific originals belong only in target repositories under `publisher_templates/`.
 5. Bibliography is centralized in `bibliography-shared/bibliography/references.bib` via submodule.
 6. Every major update must compile before merge.
 7. Generated artifacts must be redirected to `docs/paper-latex/build`.
@@ -184,7 +182,7 @@ When upgrading repositories that already contain paper files:
 4. Add or update `docs/paper-latex/.latexmkrc` with:
   - `$ENV{BIBINPUTS} = "../bibliography-shared/bibliography:" . ($ENV{BIBINPUTS} // '');`
 5. Add `.vscode/settings.json` and `.vscode/tasks.json`.
-6. Add author templates and keep publisher templates as final-stage files.
+6. Add author templates and, if needed, create `docs/paper-latex/publisher_templates/` for target-repository-only venue assets.
 7. Run a clean local compile for EN and DE.
 8. Normalize local build output location to `docs/paper-latex/build` and remove root-level LaTeX artifacts.
 

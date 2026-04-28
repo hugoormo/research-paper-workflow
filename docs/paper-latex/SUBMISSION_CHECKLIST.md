@@ -5,12 +5,12 @@ Use this checklist before submitting either PDF or DOCX versions.
 
 Authoring model:
 - Daily writing in `paper_author_en.tex` / `paper_author_de.tex`
-- Final venue formatting in `paper_template_en.tex` / `paper_template_de.tex`
+- If a venue requires its own class or template, add it only in the target repository under `publisher_templates/`
 
 ## Source Integrity
 - [ ] English author source compiles: paper_author_en.tex
 - [ ] German author source compiles: paper_author_de.tex
-- [ ] If submission-ready, final template files compile: paper_template_en.tex / paper_template_de.tex
+- [ ] If submission-ready and venue assets were added locally, the final submission manuscript compiles against the target repository's `publisher_templates/`
 - [ ] No unresolved references or citation warnings remain
 - [ ] Bibliography is generated via BibTeX from bibliography/references.bib
 - [ ] No inline `\bibitem` blocks remain in manuscript files

@@ -18,7 +18,7 @@ Required behavior:
 4. Include required LaTeX dependencies for CI, including texlive-xetex.
 5. Include the local DOCX export script and ensure it resolves paths relative to repo root (not caller working directory).
 6. Prefer direct LaTeX authoring: instantiate `paper_author_en.tex` and `paper_author_de.tex` as working manuscripts.
-7. Keep publisher templates (`paper_template_en.tex`/`paper_template_de.tex`) for final formatting handoff.
+7. If the target repo needs venue-specific submission assets, place them under `docs/paper-latex/publisher_templates/`; do not add publisher-specific files back to this shared workflow repository.
 8. Wire centralized bibliography (`bibliography/references.bib`) and update `\bibliography{}` paths in each paper.
 9. For already-instantiated repositories, add a `bibliography` symlink or copy, then switch inline `\bibitem` blocks to BibTeX.
 10. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.

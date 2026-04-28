@@ -20,13 +20,14 @@ Reusable workflow for technical research papers in VS Code using:
   SUBMISSION_CHECKLIST.md
   paper_author_en.tex
   paper_author_de.tex
-  paper_template_en.tex
-  paper_template_de.tex
+  publisher_templates/
+    README.md             ← placeholder for instantiation-only publisher assets
   build/                  ← generated LaTeX artifacts and PDFs (ignored)
-  sciencepg-template/
 /scripts/
   export-paper-docx.ps1
 ```
+
+Publisher-specific submission templates are intentionally not bundled in this repository. Add them only inside downstream instantiations under `docs/paper-latex/publisher_templates/`.
 
 ## Quick Start
 
@@ -91,7 +92,7 @@ Required behavior:
 4. Include required LaTeX dependencies for CI, including texlive-xetex.
 5. Include the local DOCX export script and ensure it resolves paths relative to repo root (not caller working directory).
 6. Prefer direct LaTeX authoring: instantiate `paper_author_en.tex` and `paper_author_de.tex` as working manuscripts.
-7. Keep publisher templates (`paper_template_en.tex`/`paper_template_de.tex`) for final formatting handoff.
+7. If the target repo needs venue-specific submission assets, place them under `docs/paper-latex/publisher_templates/`; do not add publisher-specific files back to this shared workflow repository.
 8. Wire centralized bibliography (`bibliography/references.bib`) and update `\bibliography{}` paths in each paper.
 9. For already-instantiated repositories, add a `bibliography` symlink or copy, then switch inline `\bibitem` blocks to BibTeX.
 10. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.
@@ -200,5 +201,5 @@ GitHub Actions workflow `paper-release.yml` runs on tag push (`v*`) and can also
 - Treat DOCX as generated output for submission systems that require Word.
 - Maintain EN/DE versions in parallel to prevent structural drift.
 - Add all sources to `bibliography/references.bib`; never hardcode `\bibitem` entries in individual papers.
-- Use publisher templates only for final formatting/submission phase.
+- Keep this repository publisher-neutral; add venue-specific templates only inside downstream instantiations under `docs/paper-latex/publisher_templates/`.
 - Workflows are configured to opt JavaScript actions into Node.js 24.
