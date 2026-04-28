@@ -98,11 +98,33 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Check if release exists
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" release-assets/* --clobber
+            echo "Release $GITHUB_REF_NAME exists. Uploading assets..."
+            for asset in release-assets/*; do
+              if [ -f "$asset" ]; then
+                gh release upload "$GITHUB_REF_NAME" "$asset" --clobber
+              fi
+            done
           else
-            gh release create "$GITHUB_REF_NAME" \
-              --title "Paper Release $GITHUB_REF_NAME" \
-              --notes "Automated paper artifacts (PDF and optional DOCX) for $GITHUB_REF_NAME." \
-              release-assets/*
+            echo "Creating release $GITHUB_REF_NAME with assets..."
+            # Collect all assets into an array
+            assets=()
+            for asset in release-assets/*; do
+              if [ -f "$asset" ]; then
+                assets+=("$asset")
+              fi
+            done
+            
+            # Create release with assets
+            if [ ${#assets[@]} -gt 0 ]; then
+              gh release create "$GITHUB_REF_NAME" \
+                --title "Paper Release $GITHUB_REF_NAME" \
+                --notes "Automated paper artifacts (PDF and optional DOCX) for $GITHUB_REF_NAME." \
+                "${assets[@]}"
+            else
+              gh release create "$GITHUB_REF_NAME" \
+                --title "Paper Release $GITHUB_REF_NAME" \
+                --notes "Automated paper artifacts (PDF and optional DOCX) for $GITHUB_REF_NAME."
+            fi
           fi
