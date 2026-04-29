@@ -22,9 +22,8 @@ Use this folder layout inside any target repository:
 /.vscode/
   settings.json
   tasks.json
-/bibliography/
-  references.bib          ← local copy (must sync with master research-paper-workflow repo)
 /docs/paper-latex/
+  references.bib          ← local copy (must sync with master research-paper-workflow repo)
   paper_author_en.tex
   paper_author_de.tex
   publisher_templates/
@@ -35,19 +34,19 @@ Guideline:
 - Keep this shared workflow repository publisher-neutral.
 - Write daily in `paper_author_en.tex` and `paper_author_de.tex`.
 - Add venue-specific submission templates only inside target repositories under `publisher_templates/`.
-- **Copy** `bibliography/references.bib` from the master repo into your local `/bibliography/` folder.
+- **Copy** `docs/paper-latex/references.bib` from the master repo into your local `/docs/paper-latex/` folder.
 - Keep bibliography in sync with master via the synchronization procedure (see [BIBLIOGRAPHY_SYNCHRONIZATION.md](../../../BIBLIOGRAPHY_SYNCHRONIZATION.md) in the master workflow repo).
 - Keep all generated LaTeX outputs in `docs/paper-latex/build` (never beside manuscript sources).
 
 **Important Bibliography Integration Rule:**
-- Each child repository has its own local copy of `bibliography/references.bib` (no git submodules).
+- Each child repository has its own local copy of `docs/paper-latex/references.bib` (no git submodules).
 - Use `\bibliography{references}` in manuscript files with relative paths configured correctly.
 - Periodically fetch updates from the master bibliography and push your additions back (see synchronization procedure).
 
 ## 4. One-Time Setup Per Repository
 1. Copy `.vscode` and `docs/paper-latex` into the target repository.
-2. **Copy** `bibliography/references.bib` from the master repo into your new `bibliography/` folder.
-3. Ensure your `bibliography/references.bib` is kept in sync with the master repo (see BIBLIOGRAPHY_SYNCHRONIZATION.md).
+2. **Copy** `docs/paper-latex/references.bib` from the master repo into your target `docs/paper-latex/` folder.
+3. Ensure your `docs/paper-latex/references.bib` is kept in sync with the master repo (see BIBLIOGRAPHY_SYNCHRONIZATION.md).
 4. Keep both language author files from day one (`paper_author_en.tex`, `paper_author_de.tex`) to avoid drift.
 5. Install VS Code extensions:
   - `james-yu.latex-workshop`
@@ -64,7 +63,7 @@ Guideline:
   - latexmk task args: `-outdir=build -auxdir=build`
 10. Set `editor.wordWrap` to `on` in the target workspace settings (`.vscode/settings.json`).
 11. Enforce one sentence per line (Sentence-Per-Line) for LaTeX prose in manuscript files.
-12. **Before pushing to your repo**, verify that `bibliography/references.bib` is the correct local copy (not a submodule link).
+12. **Before pushing to your repo**, verify that `docs/paper-latex/references.bib` is the correct local copy (not a submodule link).
 
 ## 5. Writing Workflow (Operational Cycle)
 1. Draft and revise content directly in `paper_author_en.tex` or `paper_author_de.tex`.
@@ -74,7 +73,7 @@ Guideline:
    - language improvements,
    - consistency checks between EN and DE versions,
    - citation and terminology consistency.
-4. Add citations during writing from `bibliography-shared/bibliography/references.bib`.
+4. Add citations during writing from `docs/paper-latex/references.bib`.
 5. Build PDF locally after each major section update (LaTeX Workshop or VS Code task).
 6. If a venue requires its own submission class or template, add that material only in the target repository under `publisher_templates/` and adapt the final submission manuscript there.
 7. Keep prose in sentence-per-line layout so each sentence occupies exactly one source line.
@@ -88,8 +87,8 @@ Run these checks before publishing:
 4. EN and DE versions have aligned section logic.
 5. Template metadata (author, DOI placeholder, journal line) is updated.
 6. Bibliography is generated through BibTeX (no inline `\bibitem` in manuscript files).
-7. Manuscripts must keep `\bibliography{references}` and rely on `BIBINPUTS` from `.latexmkrc` for lookup.
-9. Manuscripts must keep `\bibliography{references}` pointing to a valid local `bibliography/references.bib` copy.
+7. Manuscripts must keep `\bibliography{references}` and include `references.bib` in `docs/paper-latex/`.
+9. Manuscripts must keep `\bibliography{references}` pointing to a valid local `docs/paper-latex/references.bib` copy.
 10. **If you've added entries to your bibliography**, create a pull request against the master `research-paper-workflow` repo to contribute those changes back (see BIBLIOGRAPHY_SYNCHRONIZATION.md).
 ## 7. Word Conversion Reliability
 Short answer: conversion is useful, but not fully lossless for complex journal templates.
@@ -158,7 +157,7 @@ For your multi-paper, multi-repository, bilingual use case:
 1. Create a dedicated repository, e.g. `research-paper-workflow`.
 2. Store template files, SOP, and optional helper scripts there.
 3. Tag versions (`v1.0.0`, `v1.1.0`) when stable.
-4. In each research repository, add `research-paper-workflow` as submodule `bibliography-shared` and use the SOP from there as the operational baseline.
+4. In each research repository, keep a local copy of `docs/paper-latex/references.bib` and synchronize updates using the synchronization guide.
 5. Upgrade only when needed, not continuously.
 
 This gives portability plus controlled evolution.
@@ -168,20 +167,19 @@ This gives portability plus controlled evolution.
 2. EN and DE are maintained in parallel.
 3. Word export is generated, never hand-maintained as primary source.
 4. This shared workflow repository stays publisher-neutral; venue-specific originals belong only in target repositories under `publisher_templates/`.
-5. Bibliography is centralized in `bibliography-shared/bibliography/references.bib` via submodule.
+5. Bibliography is centralized in `docs/paper-latex/references.bib` as a tracked local file.
 6. Every major update must compile before merge.
 7. Generated artifacts must be redirected to `docs/paper-latex/build`.
 8. Always use a non-breaking space (`~`) before citation commands (`\citep` or `\cite`) to prevent awkward line breaks between text and citations. Example: `doctrine~\citep{ref}` instead of `doctrine \citep{ref}`.
 
 ## 12. Upgrading Existing Instantiations
 When upgrading repositories that already contain paper files:
-1. Add submodule `bibliography-shared` that points to `research-paper-workflow`.
-2. Remove local `bibliography/` copies to prevent drift.
+1. Ensure `docs/paper-latex/references.bib` exists as a tracked local file in the repository.
+2. Remove legacy `bibliography/` folder copies to prevent drift.
 3. Replace inline `\bibitem` blocks with:
   - `\bibliographystyle{plainnat}`
   - `\bibliography{references}`
-4. Add or update `docs/paper-latex/.latexmkrc` with:
-  - `$ENV{BIBINPUTS} = "../bibliography-shared/bibliography:" . ($ENV{BIBINPUTS} // '');`
+4. Ensure `docs/paper-latex/references.bib` is present so bibliography keys resolve without extra lookup configuration.
 5. Add `.vscode/settings.json` and `.vscode/tasks.json`.
 6. Add author templates and, if needed, create `docs/paper-latex/publisher_templates/` for target-repository-only venue assets.
 7. Run a clean local compile for EN and DE.

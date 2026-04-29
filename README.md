@@ -3,19 +3,18 @@
 Reusable workflow for technical research papers in VS Code using:
 - LaTeX as source of truth,
 - bilingual EN/DE manuscript maintenance,
-- centralized BibTeX bibliography (copied and synchronized across all papers),
+- local BibTeX bibliography inside `docs/paper-latex` (copied and synchronized across all papers),
 - optional DOCX export via Pandoc,
 - AI-assisted review and consistency checks.
 
 ## Repository Structure
 
 ```text
-/bibliography/
-  references.bib          ← master BibTeX database (canonical source)
 /.vscode/
   settings.json           ← LaTeX Workshop recipe/autobuild defaults
   tasks.json              ← one-click EN/DE build + clean tasks
 /docs/paper-latex/
+  references.bib          ← paper-local BibTeX database (canonical in this repo)
   OPERATIONAL_PROCEDURE.md
   SUBMISSION_CHECKLIST.md
   paper_author_en.tex
@@ -33,11 +32,11 @@ Publisher-specific submission templates are intentionally not bundled in this re
 ## Quick Start
 
 1. Copy this folder structure into any target research repository.
-2. **Copy** `bibliography/references.bib` into your target repo (do not use git submodules).
+2. **Copy** `docs/paper-latex/references.bib` into your target repo (do not use git submodules).
 3. Start from the lightweight author templates for daily writing:
   - `docs/paper-latex/paper_author_en.tex`
   - `docs/paper-latex/paper_author_de.tex`
-4. Add your sources to your local `bibliography/references.bib` copy.
+4. Add your sources to your local `docs/paper-latex/references.bib` copy.
 5. Set up your VS Code environment (see [VS Code Setup (Direct LaTeX Authoring)](#vs-code-setup-direct-latex-authoring)).
 6. Build your author paper via VS Code tasks or LaTeX Workshop recipe.
 7. Periodically synchronize bibliography changes back to the master repo (see [BIBLIOGRAPHY_SYNCHRONIZATION.md](BIBLIOGRAPHY_SYNCHRONIZATION.md)).
@@ -67,7 +66,7 @@ Recommended baseline for new instantiations:
 6. Set `editor.wordWrap` to `on` in the target workspace settings for comfortable prose editing.
 7. Keep LaTeX prose formatted with one sentence per line (Sentence-Per-Line) for cleaner diffs and easier review.
 8. Ensure `.gitignore` excludes `docs/paper-latex/build/` and LaTeX temporary files.
-9. Keep your local `bibliography/references.bib` in sync with the master repo (see [BIBLIOGRAPHY_SYNCHRONIZATION.md](BIBLIOGRAPHY_SYNCHRONIZATION.md)).
+9. Keep your local `docs/paper-latex/references.bib` in sync with the master repo (see [BIBLIOGRAPHY_SYNCHRONIZATION.md](BIBLIOGRAPHY_SYNCHRONIZATION.md)).
 
 This repository already contains the reference workspace configuration.
 
@@ -88,14 +87,14 @@ Scope:
 Required behavior:
 1. Prefer direct LaTeX authoring: instantiate `paper_author_en.tex` and `paper_author_de.tex` as working manuscripts.
 2. If the target repo needs venue-specific submission assets, place them under `docs/paper-latex/publisher_templates/`; do not add publisher-specific files back to this shared workflow repository.
-3. Copy `bibliography/references.bib` from master into the target repo (do NOT use git submodules).
+3. Copy `docs/paper-latex/references.bib` from master into the target repo (do NOT use git submodules).
 4. For already-instantiated repositories, copy bibliography from master, then switch inline `\bibitem` blocks to BibTeX references.
 5. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.
 6. Enforce artifact hygiene: route local LaTeX outputs to `docs/paper-latex/build` using `latex-workshop.latex.outDir`, `-outdir`, and `-auxdir`.
 7. Ensure `.gitignore` excludes LaTeX temporary files and `docs/paper-latex/build/`.
 8. Keep VS Code LaTeX config cross-platform: no macOS-only `latex-workshop.latex.tools[*].env.PATH` overrides.
 9. Configure `.vscode/tasks.json` with cross-platform `latexmk` commands and add TinyTeX PATH only under `osx.options.env`.
-10. Keep `bibliography/references.bib` as a local copy in your repo; maintain synchronization with the master repo per BIBLIOGRAPHY_SYNCHRONIZATION.md.
+10. Keep `docs/paper-latex/references.bib` as a local copy in your repo; maintain synchronization with the master repo per BIBLIOGRAPHY_SYNCHRONIZATION.md.
 11. Set `editor.wordWrap` to `on` in `.vscode/settings.json` of the target workspace.
 12. Format LaTeX prose using one sentence per line (Sentence-Per-Line) in author manuscripts.
 13. Update README and operational docs so they match the actual build procedures.
@@ -118,7 +117,7 @@ Instantiate the paper workflow from C:/Users/EORMOHU3W/GitHub_Repositories/resea
 
 ## Centralized Bibliography
 
-All papers share a single BibTeX file at `bibliography/references.bib`. This allows you to build a personal source library that is reusable across papers.
+All papers share a single BibTeX file at `docs/paper-latex/references.bib`. This allows you to build a personal source library that is reusable across papers.
 
 **Adding a source:**
 
@@ -146,7 +145,7 @@ Each paper's `.tex` file should use key-only bibliography lookup:
 \bibliography{references}
 ```
 
-The shared path is resolved in `docs/paper-latex/.latexmkrc` via `BIBINPUTS`, which avoids path issues when `latexmk` runs with `-outdir` and `-auxdir`.
+With `references.bib` stored in `docs/paper-latex/`, `\bibliography{references}` resolves directly during standard `latexmk` runs with `-outdir` and `-auxdir`.
 
 **Language behavior:**
 - `paper_*_en.tex` uses `\usepackage[english]{babel}` → heading renders as "References"
@@ -154,7 +153,7 @@ The shared path is resolved in `docs/paper-latex/.latexmkrc` via `BIBINPUTS`, wh
 
 The `.bib` file itself is language-neutral; the same file serves both.
 
-**Build requirement:** The LaTeX build must run `bibtex` (or `biber`) after the first `pdflatex` pass. This sequence is already configured in `.vscode/tasks.json` and `.latexmkrc`:
+**Build requirement:** The LaTeX build must run `bibtex` (or `biber`) after the first `pdflatex` pass. This sequence is already configured in `.vscode/tasks.json`:
 
 ## Documentation
 
@@ -167,6 +166,6 @@ The `.bib` file itself is language-neutral; the same file serves both.
 - Prefer direct authoring in LaTeX (`paper_author_*.tex`) over Markdown-to-LaTeX conversion.
 - Treat DOCX as generated output for submission systems that require Word.
 - Maintain EN/DE versions in parallel to prevent structural drift.
-- Add all sources to `bibliography/references.bib`; never hardcode `\bibitem` entries in individual papers.
+- Add all sources to `docs/paper-latex/references.bib`; never hardcode `\bibitem` entries in individual papers.
 - Keep this repository publisher-neutral; add venue-specific templates only inside downstream instantiations under `docs/paper-latex/publisher_templates/`.
 - Build and export workflows are local-only (no CI); use VS Code tasks or direct LaTeX commands.

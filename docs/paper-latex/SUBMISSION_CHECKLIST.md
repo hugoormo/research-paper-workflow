@@ -12,7 +12,7 @@ Authoring model:
 - [ ] German author source compiles: paper_author_de.tex
 - [ ] If submission-ready and venue assets were added locally, the final submission manuscript compiles against the target repository's `publisher_templates/`
 - [ ] No unresolved references or citation warnings remain
-- [ ] Bibliography is generated via BibTeX from bibliography/references.bib
+- [ ] Bibliography is generated via BibTeX from docs/paper-latex/references.bib
 - [ ] No inline `\bibitem` blocks remain in manuscript files
 - [ ] All figures and tables are present and referenced in text
 

@@ -4,7 +4,7 @@
 
 ## Overview
 
-The `research-paper-workflow` master repository contains a canonical bibliography at `bibliography/references.bib`. When you instantiate this workflow into a child repository (e.g., a specific paper project), you **copy** the bibliography rather than using a git submodule.
+The `research-paper-workflow` master repository contains a canonical bibliography at `docs/paper-latex/references.bib`. When you instantiate this workflow into a child repository (e.g., a specific paper project), you **copy** the bibliography rather than using a git submodule.
 
 This approach:
 - ✅ Simplifies setup (no submodule complexity)
@@ -17,12 +17,12 @@ This approach:
 Every child repository (paper project) must follow these rules:
 
 ### 1. Initial Setup
-- Copy `bibliography/references.bib` from master repo into your `bibliography/` folder.
+- Copy `docs/paper-latex/references.bib` from master repo into your `docs/paper-latex/` folder.
 - Your local copy is **independent** from the master; it's NOT a submodule or symlink.
-- Include `bibliography/references.bib` in your child repo's version control.
+- Include `docs/paper-latex/references.bib` in your child repo's version control.
 
 ### 2. Daily Work
-- Add bibliography entries freely to your local `bibliography/references.bib` as needed.
+- Add bibliography entries freely to your local `docs/paper-latex/references.bib` as needed.
 - Build and test locally; no coordination needed.
 - Commit your local bibliography changes with your paper changes.
 
@@ -36,7 +36,7 @@ cd master-workflow-repo
 git pull origin main
 
 # Copy the latest bibliography into your paper repo
-cp bibliography/references.bib /path/to/paper-repo/bibliography/
+cp docs/paper-latex/references.bib /path/to/paper-repo/docs/paper-latex/
 ```
 
 #### **When You've Added Entries to the Bibliography:**
@@ -48,15 +48,15 @@ cp bibliography/references.bib /path/to/paper-repo/bibliography/
    ```
 3. Copy your child repo's bibliography into the master:
    ```bash
-   cp /path/to/paper-repo/bibliography/references.bib bibliography/
+   cp /path/to/paper-repo/docs/paper-latex/references.bib docs/paper-latex/
    ```
 4. Review the diff:
    ```bash
-   git diff bibliography/references.bib
+   git diff docs/paper-latex/references.bib
    ```
 5. Commit and push:
    ```bash
-   git add bibliography/references.bib
+   git add docs/paper-latex/references.bib
    git commit -m "Add bibliography entries from <paper-topic>"
    git push origin feat/add-references-<topic>
    ```
@@ -65,20 +65,20 @@ cp bibliography/references.bib /path/to/paper-repo/bibliography/
    ```bash
    cd paper-repo
    git pull origin-master-workflow main  # or however you track it
-   cp master-repo/bibliography/references.bib bibliography/
+   cp master-repo/docs/paper-latex/references.bib docs/paper-latex/
    ```
 
 ### 4. Conflict Prevention
 - **Do not edit the same reference key differently** across child repos before syncing.
 - **Do not manually merge bibliography changes** without understanding BibTeX format.
 - If you discover divergence, the rule is: **master wins** (pull from master and discard local additions until you can merge them back).
-- To check for divergence: `diff bibliography/references.bib /path/to/master-repo/bibliography/references.bib`
+- To check for divergence: `diff docs/paper-latex/references.bib /path/to/master-repo/docs/paper-latex/references.bib`
 
 ### 5. Multi-Machine Workflow
 If you work on macOS and Windows:
 1. Before switching machines, **push your child repo changes**.
 2. On the new machine, **pull the latest bibliography from master**.
-3. Copy it into your child repo: `cp master/bibliography/references.bib child/bibliography/`
+3. Copy it into your child repo: `cp master/docs/paper-latex/references.bib child/docs/paper-latex/`
 4. Continue work.
 
 This prevents the "which machine has the latest entries?" problem.
@@ -87,7 +87,7 @@ This prevents the "which machine has the latest entries?" problem.
 
 The master `research-paper-workflow` repo maintains these standards:
 
-1. **Canonical source**: `bibliography/references.bib` is the single source of truth.
+1. **Canonical source**: `docs/paper-latex/references.bib` is the single source of truth.
 2. **Quality gates**: Review all incoming bibliography PRs for:
    - Valid BibTeX syntax (run `bibtex` locally to verify)
    - No duplicate keys
@@ -104,11 +104,11 @@ The master `research-paper-workflow` repo maintains these standards:
 cd master-repo && git pull origin main
 
 # Copy master bibliography to child
-cp master-repo/bibliography/references.bib child-repo/bibliography/
+cp master-repo/docs/paper-latex/references.bib child-repo/docs/paper-latex/
 
 # Commit in child repo
 cd child-repo
-git add bibliography/references.bib
+git add docs/paper-latex/references.bib
 git commit -m "Sync bibliography with master"
 ```
 
@@ -123,7 +123,7 @@ git commit -m "Sync bibliography with master"
 ### "I accidentally committed my local bibliography to master"
 **Don't panic.** It likely contains the same entries anyway. Check:
 ```bash
-diff master-repo/bibliography/references.bib my-local-copy/bibliography/references.bib
+diff master-repo/docs/paper-latex/references.bib my-local-copy/docs/paper-latex/references.bib
 ```
 If identical, no action needed. If different, follow the merge procedure above.
 
