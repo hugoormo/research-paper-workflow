@@ -177,7 +177,7 @@ When upgrading repositories that already contain paper files:
 1. Ensure `docs/paper-latex/references.bib` exists as a tracked local file in the repository.
 2. Remove legacy `bibliography/` folder copies to prevent drift.
 3. Replace inline `\bibitem` blocks with:
-  - `\bibliographystyle{plainnat}`
+  - `\bibliographystyle{IEEEtran}`
   - `\bibliography{references}`
 4. Ensure `docs/paper-latex/references.bib` is present so bibliography keys resolve without extra lookup configuration.
 5. Add `.vscode/settings.json` and `.vscode/tasks.json`.

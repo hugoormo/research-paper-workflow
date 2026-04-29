@@ -141,7 +141,7 @@ As shown by \cite{AuthorYear}, ...
 Each paper's `.tex` file should use key-only bibliography lookup:
 
 ```latex
-\bibliographystyle{plainnat}
+\bibliographystyle{IEEEtran}
 \bibliography{references}
 ```
 
