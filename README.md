@@ -3,7 +3,7 @@
 Reusable workflow for technical research papers in VS Code using:
 - LaTeX as source of truth,
 - bilingual EN/DE manuscript maintenance,
-- centralized BibTeX bibliography shared across all papers,
+- centralized BibTeX bibliography (copied and synchronized across all papers),
 - optional DOCX export via Pandoc,
 - AI-assisted review and consistency checks.
 
@@ -11,7 +11,7 @@ Reusable workflow for technical research papers in VS Code using:
 
 ```text
 /bibliography/
-  references.bib          ← central BibTeX database (shared by all papers)
+  references.bib          ← master BibTeX database (canonical source)
 /.vscode/
   settings.json           ← LaTeX Workshop recipe/autobuild defaults
   tasks.json              ← one-click EN/DE build + clean tasks
@@ -25,26 +25,23 @@ Reusable workflow for technical research papers in VS Code using:
   build/                  ← generated LaTeX artifacts and PDFs (ignored)
 /scripts/
   export-paper-docx.ps1
+/BIBLIOGRAPHY_SYNCHRONIZATION.md ← rules for keeping children repos in sync with master
 ```
 
 Publisher-specific submission templates are intentionally not bundled in this repository. Add them only inside downstream instantiations under `docs/paper-latex/publisher_templates/`.
 
 ## Quick Start
 
-If you consume this workflow as a git submodule in another repository, initialize it once from the host repository root:
-
-```bash
-git submodule update --init --recursive
-```
-
 1. Copy this folder structure into any target research repository.
-2. Start from the lightweight author templates for daily writing:
+2. **Copy** `bibliography/references.bib` into your target repo (do not use git submodules).
+3. Start from the lightweight author templates for daily writing:
   - `docs/paper-latex/paper_author_en.tex`
   - `docs/paper-latex/paper_author_de.tex`
-3. Add your sources to `bibliography/references.bib` (see [Centralized Bibliography](#centralized-bibliography)).
-4. Set up your VS Code environment (see [VS Code Setup (Direct LaTeX Authoring)](#vs-code-setup-direct-latex-authoring)).
-5. Build your author paper via VS Code tasks or LaTeX Workshop recipe.
-6. Export DOCX (optional):
+4. Add your sources to your local `bibliography/references.bib` copy.
+5. Set up your VS Code environment (see [VS Code Setup (Direct LaTeX Authoring)](#vs-code-setup-direct-latex-authoring)).
+6. Build your author paper via VS Code tasks or LaTeX Workshop recipe.
+7. Periodically synchronize bibliography changes back to the master repo (see [BIBLIOGRAPHY_SYNCHRONIZATION.md](BIBLIOGRAPHY_SYNCHRONIZATION.md)).
+8. Export DOCX (optional):
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/export-paper-docx.ps1 -PaperBaseName "paper_<topic>" -Language both
@@ -69,7 +66,8 @@ Recommended baseline for new instantiations:
   - Use cross-platform task commands (`command: latexmk`) and add TinyTeX PATH only under `osx.options.env`.
 6. Set `editor.wordWrap` to `on` in the target workspace settings for comfortable prose editing.
 7. Keep LaTeX prose formatted with one sentence per line (Sentence-Per-Line) for cleaner diffs and easier review.
-8. Add `docs/paper-latex/.latexmkrc` and set `BIBINPUTS` with OS-aware separators so BibTeX resolves the shared bibliography from `build/` runs.
+8. Ensure `.gitignore` excludes `docs/paper-latex/build/` and LaTeX temporary files.
+9. Keep your local `bibliography/references.bib` in sync with the master repo (see [BIBLIOGRAPHY_SYNCHRONIZATION.md](BIBLIOGRAPHY_SYNCHRONIZATION.md)).
 
 This repository already contains the reference workspace configuration.
 
@@ -84,20 +82,20 @@ Scope:
 1. Copy and adapt the workflow only as needed for this repo.
 2. Keep existing project files and behavior intact.
 3. Configure the paper workflow for these manuscript files:
-- Papers/<your_english_paper_file>
-- Papers/<your_german_paper_file>
+   - Papers/<your_english_paper_file>
+   - Papers/<your_german_paper_file>
 
 Required behavior:
 1. Prefer direct LaTeX authoring: instantiate `paper_author_en.tex` and `paper_author_de.tex` as working manuscripts.
 2. If the target repo needs venue-specific submission assets, place them under `docs/paper-latex/publisher_templates/`; do not add publisher-specific files back to this shared workflow repository.
-3. Wire centralized bibliography (`bibliography/references.bib`) and update `\bibliography{}` paths in each paper.
-4. For already-instantiated repositories, add a `bibliography` symlink or copy, then switch inline `\bibitem` blocks to BibTeX.
+3. Copy `bibliography/references.bib` from master into the target repo (do NOT use git submodules).
+4. For already-instantiated repositories, copy bibliography from master, then switch inline `\bibitem` blocks to BibTeX references.
 5. Add `.vscode/settings.json` and `.vscode/tasks.json` for one-click local builds.
 6. Enforce artifact hygiene: route local LaTeX outputs to `docs/paper-latex/build` using `latex-workshop.latex.outDir`, `-outdir`, and `-auxdir`.
 7. Ensure `.gitignore` excludes LaTeX temporary files and `docs/paper-latex/build/`.
 8. Keep VS Code LaTeX config cross-platform: no macOS-only `latex-workshop.latex.tools[*].env.PATH` overrides.
 9. Configure `.vscode/tasks.json` with cross-platform `latexmk` commands and add TinyTeX PATH only under `osx.options.env`.
-10. Add `docs/paper-latex/.latexmkrc` with OS-aware `BIBINPUTS` and keep paper files at `\bibliography{references}`.
+10. Keep `bibliography/references.bib` as a local copy in your repo; maintain synchronization with the master repo per BIBLIOGRAPHY_SYNCHRONIZATION.md.
 11. Set `editor.wordWrap` to `on` in `.vscode/settings.json` of the target workspace.
 12. Format LaTeX prose using one sentence per line (Sentence-Per-Line) in author manuscripts.
 13. Update README and operational docs so they match the actual build procedures.

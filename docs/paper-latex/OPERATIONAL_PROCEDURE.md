@@ -22,13 +22,11 @@ Use this folder layout inside any target repository:
 /.vscode/
   settings.json
   tasks.json
-/bibliography-shared/            (Git submodule: research-paper-workflow)
-  bibliography/
-    references.bib
+/bibliography/
+  references.bib          ← local copy (must sync with master research-paper-workflow repo)
 /docs/paper-latex/
   paper_author_en.tex
   paper_author_de.tex
-  .latexmkrc
   publisher_templates/
   OPERATIONAL_PROCEDURE.md
 ```
@@ -37,21 +35,19 @@ Guideline:
 - Keep this shared workflow repository publisher-neutral.
 - Write daily in `paper_author_en.tex` and `paper_author_de.tex`.
 - Add venue-specific submission templates only inside target repositories under `publisher_templates/`.
-- Keep bibliography centralized in `bibliography-shared/bibliography/references.bib`.
+- **Copy** `bibliography/references.bib` from the master repo into your local `/bibliography/` folder.
+- Keep bibliography in sync with master via the synchronization procedure (see [BIBLIOGRAPHY_SYNCHRONIZATION.md](../../../BIBLIOGRAPHY_SYNCHRONIZATION.md) in the master workflow repo).
 - Keep all generated LaTeX outputs in `docs/paper-latex/build` (never beside manuscript sources).
 
-Mandatory bibliography integration rule:
-- Do not keep a local duplicate `bibliography/references.bib` in each paper repository.
-- Add `research-paper-workflow` as a Git submodule at `bibliography-shared`.
-- In manuscript files, use `\bibliography{references}` (not a fragile relative path).
-- Configure `docs/paper-latex/.latexmkrc` with `BIBINPUTS` so BibTeX can resolve `references.bib` from the submodule.
+**Important Bibliography Integration Rule:**
+- Each child repository has its own local copy of `bibliography/references.bib` (no git submodules).
+- Use `\bibliography{references}` in manuscript files with relative paths configured correctly.
+- Periodically fetch updates from the master bibliography and push your additions back (see synchronization procedure).
 
 ## 4. One-Time Setup Per Repository
 1. Copy `.vscode` and `docs/paper-latex` into the target repository.
-2. Add the central workflow repository as a submodule:
-  - `git submodule add https://github.com/hugoormo/research-paper-workflow bibliography-shared`
-3. Ensure `docs/paper-latex/.latexmkrc` contains:
-  - `$ENV{BIBINPUTS} = "../bibliography-shared/bibliography:" . ($ENV{BIBINPUTS} // '');`
+2. **Copy** `bibliography/references.bib` from the master repo into your new `bibliography/` folder.
+3. Ensure your `bibliography/references.bib` is kept in sync with the master repo (see BIBLIOGRAPHY_SYNCHRONIZATION.md).
 4. Keep both language author files from day one (`paper_author_en.tex`, `paper_author_de.tex`) to avoid drift.
 5. Install VS Code extensions:
   - `james-yu.latex-workshop`
@@ -68,6 +64,7 @@ Mandatory bibliography integration rule:
   - latexmk task args: `-outdir=build -auxdir=build`
 10. Set `editor.wordWrap` to `on` in the target workspace settings (`.vscode/settings.json`).
 11. Enforce one sentence per line (Sentence-Per-Line) for LaTeX prose in manuscript files.
+12. **Before pushing to your repo**, verify that `bibliography/references.bib` is the correct local copy (not a submodule link).
 
 ## 5. Writing Workflow (Operational Cycle)
 1. Draft and revise content directly in `paper_author_en.tex` or `paper_author_de.tex`.
@@ -92,7 +89,8 @@ Run these checks before publishing:
 5. Template metadata (author, DOI placeholder, journal line) is updated.
 6. Bibliography is generated through BibTeX (no inline `\bibitem` in manuscript files).
 7. Manuscripts must keep `\bibliography{references}` and rely on `BIBINPUTS` from `.latexmkrc` for lookup.
-
+9. Manuscripts must keep `\bibliography{references}` pointing to a valid local `bibliography/references.bib` copy.
+10. **If you've added entries to your bibliography**, create a pull request against the master `research-paper-workflow` repo to contribute those changes back (see BIBLIOGRAPHY_SYNCHRONIZATION.md).
 ## 7. Word Conversion Reliability
 Short answer: conversion is useful, but not fully lossless for complex journal templates.
 
