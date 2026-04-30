@@ -63,7 +63,9 @@ Recommended baseline for new instantiations:
   - Build DE author paper
   - Clean LaTeX artifacts
   - Use cross-platform task commands (`command: latexmk`) and add TinyTeX PATH only under `osx.options.env`.
-6. Set `editor.wordWrap` to `on` in the target workspace settings for comfortable prose editing.
+6. Set persistent word wrap in target workspace settings for comfortable prose editing:
+  - `"editor.wordWrap": "on"`
+  - `"[latex]": { "editor.wordWrap": "on" }`
 7. Keep LaTeX prose formatted with one sentence per line (Sentence-Per-Line) for cleaner diffs and easier review.
 8. Ensure `.gitignore` excludes `docs/paper-latex/build/` and LaTeX temporary files.
 9. Keep your local `docs/paper-latex/references.bib` in sync with the master repo (see [BIBLIOGRAPHY_SYNCHRONIZATION.md](BIBLIOGRAPHY_SYNCHRONIZATION.md)).
@@ -95,7 +97,9 @@ Required behavior:
 8. Keep VS Code LaTeX config cross-platform: no macOS-only `latex-workshop.latex.tools[*].env.PATH` overrides.
 9. Configure `.vscode/tasks.json` with cross-platform `latexmk` commands and add TinyTeX PATH only under `osx.options.env`.
 10. Keep `docs/paper-latex/references.bib` as a local copy in your repo; maintain synchronization with the master repo per BIBLIOGRAPHY_SYNCHRONIZATION.md.
-11. Set `editor.wordWrap` to `on` in `.vscode/settings.json` of the target workspace.
+11. Set persistent word wrap in `.vscode/settings.json` of the target workspace:
+  - `"editor.wordWrap": "on"`
+  - `"[latex]": { "editor.wordWrap": "on" }`
 12. Format LaTeX prose using one sentence per line (Sentence-Per-Line) in author manuscripts.
 13. Update README and operational docs so they match the actual build procedures.
 14. Avoid introducing unrelated changes.

@@ -61,7 +61,9 @@ Guideline:
 9. Set output routing as a fixed standard:
   - LaTeX Workshop: `latex-workshop.latex.outDir = %DIR%/build`
   - latexmk task args: `-outdir=build -auxdir=build`
-10. Set `editor.wordWrap` to `on` in the target workspace settings (`.vscode/settings.json`).
+10. Set persistent word wrap in target workspace settings (`.vscode/settings.json`):
+  - `"editor.wordWrap": "on"`
+  - `"[latex]": { "editor.wordWrap": "on" }`
 11. Enforce one sentence per line (Sentence-Per-Line) for LaTeX prose in manuscript files.
 12. **Before pushing to your repo**, verify that `docs/paper-latex/references.bib` is the correct local copy (not a submodule link).
 
